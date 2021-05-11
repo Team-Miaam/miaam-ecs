@@ -14,6 +14,7 @@ module.exports = {
 	plugins: ['@babel', 'import', 'prettier'],
 	rules: {
 		'prettier/prettier': 'error',
+		'import/extensions': ['error', 'always'],
 	},
 	settings: {},
 };
