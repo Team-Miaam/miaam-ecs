@@ -1,2 +1,3 @@
-let x = 5;
-console.log(x);
+import Component from './src/Component.js';
+
+export { Component };
