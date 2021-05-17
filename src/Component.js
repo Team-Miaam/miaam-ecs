@@ -34,40 +34,7 @@ class Component {
 	 * all keys must be pre-scecified in the component schema.
 	 */
 	constructor(componentProps) {
-		const props = componentProps || {};
-
-		const schema = this.getSchema();
-		if (schema === undefined) {
-			// component object can't be instantiated without schema
-			throw new SchemaNotFoundException(`Schema for this class is undefined.
-			Try calling the setSchema method before instantiating constructors of this class.`);
-		}
-
-		// executing pre instantiation operations
-		this.preinit();
-
-		// non production mode error for props with invalid schema
-		if (process.env.NODE_ENV !== 'production') {
-			checkInvalidSchemaAttributes(schema, props);
-		}
-
-		// instantiating object
-		Object.keys(schema).forEach((key) => {
-			if (Object.prototype.hasOwnProperty.call(props, key)) {
-				// creating identified schema defined properties from props
-				this[key] = props[key];
-			} else if (Object.prototype.hasOwnProperty.call(schema[key], 'default')) {
-				// creating identified schema defined properties from schema defaults
-				this[key] = schema[key].default;
-			} else {
-				// creating identified schema defined properties from type defaults
-				const { type } = schema[key];
-				this[key] = type.default;
-			}
-		});
-
-		// executing post instantiation operations
-		this.init();
+		this.reset(componentProps);
 	}
 
 	/* ================================ LIFECYCLE METHODS ================================ */
@@ -114,7 +81,42 @@ class Component {
 	/**
 	 * Resets the component to its default initial state pre-specified by schema
 	 */
-	reset() {}
+	reset(componentProps = {}) {
+		const props = componentProps || {};
+
+		const schema = this.getSchema();
+		if (schema === undefined) {
+			// component object can't be instantiated without schema
+			throw new SchemaNotFoundException(`Schema for this class is undefined.
+			Try calling the setSchema method before instantiating constructors of this class.`);
+		}
+
+		// executing pre instantiation operations
+		this.preinit();
+
+		// non production mode error for props with invalid schema
+		if (process.env.NODE_ENV !== 'production') {
+			checkInvalidSchemaAttributes(schema, props);
+		}
+
+		// instantiating object
+		Object.keys(schema).forEach((key) => {
+			if (Object.prototype.hasOwnProperty.call(props, key)) {
+				// creating identified schema defined properties from props
+				this[key] = props[key];
+			} else if (Object.prototype.hasOwnProperty.call(schema[key], 'default')) {
+				// creating identified schema defined properties from schema defaults
+				this[key] = schema[key].default;
+			} else {
+				// creating identified schema defined properties from type defaults
+				const { type } = schema[key];
+				this[key] = type.default;
+			}
+		});
+
+		// executing post instantiation operations
+		this.init();
+	}
 
 	/* ================================ GETTERS ================================ */
 
