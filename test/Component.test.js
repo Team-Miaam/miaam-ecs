@@ -11,16 +11,12 @@ describe('Component', () => {
 		describe('component can have its own schema', () => {
 			test('schema cannot be null or undefined', () => {
 				expect(() => ComponentA.setSchema(null)).to.throw(
-					SchemaNotDefinedException
-				);
-				expect(() => ComponentA.setSchema(null)).to.throw(
-					'Provided schema is either null or undefined. Cannot set a schema which is not defined properly.'
+					SchemaNotDefinedException,
+					'Provided schema is either null or undefined.'
 				);
 				expect(() => ComponentA.setSchema(undefined)).to.throw(
-					SchemaNotDefinedException
-				);
-				expect(() => ComponentA.setSchema(undefined)).to.throw(
-					'Provided schema is either null or undefined. Cannot set a schema which is not defined properly.'
+					SchemaNotDefinedException,
+					'Provided schema is either null or undefined.'
 				);
 			});
 		});
