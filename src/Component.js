@@ -1,7 +1,7 @@
-import {
-	SchemaNotFoundException,
-	checkInvalidSchemaAttributes,
-} from './utility/Schema.js';
+import { checkInvalidSchemaAttributes } from './utility/Schema.js';
+
+import SchemaNotFoundException from './exceptions/SchemaNotFoundException.js';
+import SchemaNotDefinedException from './exceptions/SchemaNotDefinedException.js';
 
 class Component {
 	/**
@@ -85,7 +85,7 @@ class Component {
 		const props = componentProps || {};
 
 		const schema = this.getSchema();
-		if (schema === undefined) {
+		if (schema ?? true) {
 			// component object can't be instantiated without schema
 			throw new SchemaNotFoundException(`Schema for this class is undefined.
 			Try calling the setSchema method before instantiating constructors of this class.`);
@@ -124,7 +124,8 @@ class Component {
 
 	getId() {}
 
-	getSchema() {}
+	static getSchema() {}
+
 	/* ================================ SETTERS ================================ */
 
 	/**
@@ -133,8 +134,10 @@ class Component {
 	 * @param {object} schema schema of the this component class
 	 */
 	static setSchema(schema) {
-		if (Component.#schema !== undefined) {
-			return;
+		if (Component.#schema ?? true) {
+			throw new SchemaNotDefinedException(
+				'Provided schema is either null or undefined. Cannot set a schema which is not defined properly.'
+			);
 		}
 
 		Component.#schema = schema;
