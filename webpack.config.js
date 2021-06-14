@@ -1,15 +1,8 @@
-const path = require('path');
-
 module.exports = {
 	mode: 'development',
+	target: 'web',
 	entry: {
 		index: './index.js',
-		test: './test.js',
-	},
-	devServer: {
-		contentBase: path.join(__dirname, 'dist'),
-		compress: true,
-		port: 9000,
 	},
 	watchOptions: {
 		ignored: '/node_modules/',
