@@ -96,18 +96,17 @@ describe('Type', () => {
 
 		const NewType = Type.Create(typeName, jsonSerialization, defaultValue);
 
-		test('type name must not change from external effects', () => {
+		test('type name must be free from external side effects', () => {
 			typeName = 'changed';
 			expect(NewType.getName()).equals('NewType');
 		});
 
-		test('getter of default value must be able to return immutable copy', () => {
+		test('default value must be a clone of passed argument', () => {
 			defaultValue.value = 'changed';
-			NewType.getDefaultValue().value = 'changed';
 			expect(NewType.getDefaultValue().value).equals('default');
 		});
 
-		test('clone method must not change from external effects', () => {
+		test('clone method must be free from external side effects', () => {
 			jsonSerialization = (_value) => 1;
 			expect(NewType.clone(defaultValue)).to.deep.equals(defaultValue);
 		});

@@ -53,6 +53,9 @@ class Type {
 	 * @param {String} name name of the type
 	 * @param {Function} clone function that handles the responsibility of cloning values of this type
 	 * @param {any} defaultValue default value of the type
+	 * @throws {IllegalArgumentException} when type of name is not string
+	 * or clone is not a function with 1 argument
+	 * or default value is undefined or
 	 * @returns {Type} a newly created instance of Type class
 	 */
 	static Create(name, clone, defaultValue) {
@@ -107,12 +110,21 @@ class Type {
 	/**
 	 * Getter method for accessing the default value of the type
 	 *
+	 * @warning
+	 * Default value is theoretically constant.
+	 * If the default value is an object,
+	 * it is possible to manually change the default value,
+	 * but it is not desirable even when you know what you are doing!
+	 * It may create inconsistency issues.
+	 * Immutability constraint is not enforced because,
+	 * it is costly from the point of view of performance.
+	 *
 	 * @since 0.0.1
 	 * @public
 	 * @returns {any} the default value of the type
 	 */
 	getDefaultValue() {
-		return this.clone(this.#defaultValue);
+		return this.#defaultValue;
 	}
 }
 
