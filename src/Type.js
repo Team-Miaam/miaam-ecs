@@ -27,7 +27,17 @@ class Type {
 	#name;
 
 	/**
-	 * Clone method which clones (deep copies) supported values and returns the cloned value
+	 * Validator function checks whether a value can be of this type.
+	 *
+	 * @since 0.0.1
+	 * @constant
+	 * @private
+	 * @type {Function}
+	 */
+	#validator;
+
+	/**
+	 * Clone function which clones (deep copies) supported values and returns the cloned value
 	 *
 	 * @since 0.0.1
 	 * @constant
@@ -52,17 +62,25 @@ class Type {
 	 * @since 0.0.1
 	 * @param {String} name name of the type
 	 * @param {Function} clone function that handles the responsibility of cloning values of this type
+	 * @param {Function} validator function that validates type of any value against this type
 	 * @param {any} defaultValue default value of the type
 	 * @throws {IllegalArgumentException} when type of name is not string
-	 * or clone is not a function with 1 argument
-	 * or default value is undefined or
+	 * or validator is not a function with one argument
+	 * or clone is not a function with one argument
+	 * or default value is undefined
+	 * or the default value cannot be validated against provided validator
 	 * @returns {Type} a newly created instance of Type class
 	 */
-	static Create(name, clone, defaultValue) {
+	constructor(name, validator, clone, defaultValue) {
 		if (process.env.NODE_ENV !== 'production') {
 			if (!(typeof name === 'string' || name instanceof String)) {
 				throw new IllegalArgumentException(
-					'Cannot create new type definition. Provided type name is not a valid string'
+					'Cannot create new type definition. Provided type name is not a valid string.'
+				);
+			}
+			if (!(validator instanceof Function && validator.length === 1)) {
+				throw new IllegalArgumentException(
+					'Cannot create new type definition. Provided function is not a valid validator function.'
 				);
 			}
 			if (!(clone instanceof Function && clone.length === 1)) {
@@ -71,17 +89,19 @@ class Type {
 				);
 			}
 			if (defaultValue === undefined) {
+				throw new IllegalArgumentException('Cannot create new type definition. Provided default value is undefined.');
+			}
+			if (validator(defaultValue) !== true) {
 				throw new IllegalArgumentException(
-					'Cannot create new type definition. Provided default value is undefined.'
+					'Cannot create new type definition. Provided default value cannot be validated using provided validator.'
 				);
 			}
 		}
 
-		const newType = new Type();
-		newType.#name = name;
-		newType.#clone = clone;
-		newType.#defaultValue = newType.clone(defaultValue);
-		return newType;
+		this.#name = name;
+		this.#validator = validator;
+		this.#clone = clone;
+		this.#defaultValue = this.clone(defaultValue);
 	}
 
 	/**
@@ -96,6 +116,19 @@ class Type {
 	}
 
 	/**
+	 * Validates provided value against this type, i.e.
+	 * it checks whether a value can be of this type.
+	 *
+	 * @since 0.0.1
+	 * @public
+	 * @param {any} value the value to validate against this type
+	 * @returns {Boolean} true if the provided value can be validated against this type
+	 */
+	validate(value) {
+		return this.#validator(value);
+	}
+
+	/**
 	 * Clones the provided value using the clone function of defined type
 	 *
 	 * @since 0.0.1
@@ -104,6 +137,11 @@ class Type {
 	 * @returns {any} the cloned value
 	 */
 	clone(value) {
+		if (process.env.NODE_ENV !== 'production') {
+			if (!this.validate(value)) {
+				throw new IllegalArgumentException('Provided value cannot be validated against this type.');
+			}
+		}
 		return this.#clone(value);
 	}
 
@@ -125,6 +163,17 @@ class Type {
 	 */
 	getDefaultValue() {
 		return this.#defaultValue;
+	}
+
+	/**
+	 * Returns the string representation of type
+	 *
+	 * @since 0.0.1
+	 * @public
+	 * @returns {String} string representation
+	 */
+	toString() {
+		return `Type: ${this.getName()}`;
 	}
 }
 
