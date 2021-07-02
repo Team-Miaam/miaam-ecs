@@ -71,7 +71,7 @@ class Type {
 	 * or the default value cannot be validated against provided validator
 	 * @returns {Type} a newly created instance of Type class
 	 */
-	static Create(name, validator, clone, defaultValue) {
+	constructor(name, validator, clone, defaultValue) {
 		if (process.env.NODE_ENV !== 'production') {
 			if (!(typeof name === 'string')) {
 				throw new IllegalArgumentException(
@@ -98,12 +98,10 @@ class Type {
 			}
 		}
 
-		const newType = new Type();
-		newType.#name = name;
-		newType.#validator = validator;
-		newType.#clone = clone;
-		newType.#defaultValue = newType.clone(defaultValue);
-		return newType;
+		this.#name = name;
+		this.#validator = validator;
+		this.#clone = clone;
+		this.#defaultValue = this.clone(defaultValue);
 	}
 
 	/**

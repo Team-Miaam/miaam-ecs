@@ -1,21 +1,21 @@
 import Type from '../../Type.js';
 
 const PrimitiveTypes = {
-	Boolean: Type.Create(
+	Boolean: new Type(
 		'Boolean',
 		(value) => typeof value === 'boolean',
 		(value) => value,
 		false
 	),
 
-	Number: Type.Create(
+	Number: new Type(
 		'Number',
 		(value) => typeof value === 'number',
 		(value) => value,
 		0
 	),
 
-	String: Type.Create(
+	String: new Type(
 		'String',
 		(value) => typeof value === 'string',
 		(value) => value,

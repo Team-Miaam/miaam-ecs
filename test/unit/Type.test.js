@@ -17,60 +17,60 @@ describe('Type', () => {
 		value: 'default',
 	};
 
-	const NewType = Type.Create(typeName, typeValidator, typeClone, typeDefaultValue);
+	const NewType = new Type(typeName, typeValidator, typeClone, typeDefaultValue);
 
 	describe('Instantiation', () => {
 		test('Newly created type name must be a valid string', () => {
 			expect(() => {
-				Type.Create(null, undefined, undefined, undefined);
+				new Type(null, undefined, undefined, undefined);
 			}).to.throw(IllegalArgumentException, 'type name is not a valid string');
 			expect(() => {
-				Type.Create(undefined, undefined, undefined, undefined);
+				new Type(undefined, undefined, undefined, undefined);
 			}).to.throw(IllegalArgumentException, 'type name is not a valid string');
 			expect(() => {
-				Type.Create({}, undefined, undefined, undefined);
+				new Type({}, undefined, undefined, undefined);
 			}).to.throw(IllegalArgumentException, 'type name is not a valid string');
 		});
 
 		test('Newly created type must have a valid validator method', () => {
 			expect(() => {
-				Type.Create(typeName, null, undefined, undefined);
+				new Type(typeName, null, undefined, undefined);
 			}).to.throw(IllegalArgumentException, 'function is not a valid validator function');
 			expect(() => {
-				Type.Create(typeName, undefined, undefined);
+				new Type(typeName, undefined, undefined);
 			}).to.throw(IllegalArgumentException, 'function is not a valid validator function');
 			expect(() => {
-				Type.Create(typeName, () => {}, undefined, undefined);
+				new Type(typeName, () => {}, undefined, undefined);
 			}).to.throw(IllegalArgumentException, 'function is not a valid validator function');
 			expect(() => {
-				Type.Create(typeName, (_a, _b) => {}, undefined, undefined);
+				new Type(typeName, (_a, _b) => {}, undefined, undefined);
 			}).to.throw(IllegalArgumentException, 'function is not a valid validator function');
 		});
 
 		test('Newly created type must have a valid clone method', () => {
 			expect(() => {
-				Type.Create(typeName, typeValidator, null, undefined);
+				new Type(typeName, typeValidator, null, undefined);
 			}).to.throw(IllegalArgumentException, 'function is not a valid clone function');
 			expect(() => {
-				Type.Create(typeName, typeValidator, undefined, undefined);
+				new Type(typeName, typeValidator, undefined, undefined);
 			}).to.throw(IllegalArgumentException, 'function is not a valid clone function');
 			expect(() => {
-				Type.Create(typeName, typeValidator, () => {}, undefined);
+				new Type(typeName, typeValidator, () => {}, undefined);
 			}).to.throw(IllegalArgumentException, 'function is not a valid clone function');
 			expect(() => {
-				Type.Create(typeName, typeValidator, (_a, _b) => {}, undefined);
+				new Type(typeName, typeValidator, (_a, _b) => {}, undefined);
 			}).to.throw(IllegalArgumentException, 'function is not a valid clone function');
 		});
 
 		test('Newly created type must have a valid default value', () => {
 			expect(() => {
-				Type.Create('NewType', typeValidator, typeClone, undefined);
+				new Type('NewType', typeValidator, typeClone, undefined);
 			}).to.throw(IllegalArgumentException, 'default value is undefined');
 			expect(() => {
-				Type.Create('NewType', typeValidator, typeClone, {});
+				new Type('NewType', typeValidator, typeClone, {});
 			}).to.throw(IllegalArgumentException, 'default value cannot be validated using provided validator');
 			expect(() => {
-				Type.Create('NewType', typeValidator, typeClone, 'abc');
+				new Type('NewType', typeValidator, typeClone, 'abc');
 			}).to.throw(IllegalArgumentException, 'default value cannot be validated using provided validator');
 		});
 
@@ -134,7 +134,7 @@ describe('Type', () => {
 		let dynamicTypeName = 'NewType';
 		let simpleValidator = (_value) => true;
 		let jsonSerialization = (value) => JSON.parse(JSON.stringify(value));
-		const properType = Type.Create(dynamicTypeName, simpleValidator, jsonSerialization, typeDefaultValue);
+		const properType = new Type(dynamicTypeName, simpleValidator, jsonSerialization, typeDefaultValue);
 
 		test('type name must be free from external side effects', () => {
 			dynamicTypeName = 'changed';
