@@ -73,7 +73,7 @@ class Type {
 	 */
 	static Create(name, validator, clone, defaultValue) {
 		if (process.env.NODE_ENV !== 'production') {
-			if (!(typeof name === 'string' || name instanceof String)) {
+			if (!(typeof name === 'string')) {
 				throw new IllegalArgumentException(
 					'Cannot create new type definition. Provided type name is not a valid string.'
 				);
