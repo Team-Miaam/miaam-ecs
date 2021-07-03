@@ -134,6 +134,7 @@ class Type {
 	 * @public
 	 * @param {any} value the value to clone
 	 * @returns {any} the cloned value
+	 * @throws {IllegalArgumentException} when value cannot be validated against this type
 	 */
 	clone(value) {
 		if (process.env.NODE_ENV !== 'production') {
