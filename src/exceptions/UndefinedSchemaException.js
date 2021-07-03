@@ -5,7 +5,6 @@
  * @since 0.0.1
  * @public
  * @class
- * @exports
  */
 class UndefinedSchemaException extends Error {
 	constructor(...params) {

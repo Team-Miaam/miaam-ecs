@@ -1,4 +1,6 @@
-import SchemaNotFoundExceptionJs from '../exceptions/SchemaNotFoundException.js';
+/**
+ * @namespace Schema
+ */
 import Type from '../Type.js';
 
 /**
@@ -6,8 +8,8 @@ import Type from '../Type.js';
  * i.e. this function ensures that schema follows the schemas schema
  *
  * @since 0.0.1
+ * @memberof Schema
  * @public
- * @exports
  * @param {Object} schema the schema to check
  * @returns {Boolean} whether the provided schema is valid
  */
@@ -31,15 +33,6 @@ const isValidSchema = (schema) => {
 	);
 };
 
-const checkInvalidSchemaAttributes = (schema, props) => {
-	Object.keys(props).forEach((key) => {
-		if (!Object.prototype.hasOwnProperty.call(schema, key)) {
-			throw new SchemaNotFoundExceptionJs.SchemaNotFoundException(
-				`Trying to set attribute '${key}' not defined in the '${schema}' schema. 
-				Please fix the schema, the attribute value won't be set`
-			);
-		}
-	});
-};
+const checkInvalidSchemaAttributes = (schema, props) => {};
 
 export { isValidSchema, checkInvalidSchemaAttributes };

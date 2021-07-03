@@ -9,7 +9,7 @@
 		"build": "webpack",
 		"serve": "webpack serve",
 		"test": "mocha || exit 0",
-		"doc": "jsdoc --help"
+		"doc": "jsdoc src -r -d docs"
 	},
 	"repository": {
 		"type": "git",
