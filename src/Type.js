@@ -69,7 +69,6 @@ class Type {
 	 * or clone is not a function with one argument
 	 * or default value is undefined
 	 * or the default value cannot be validated against provided validator
-	 * @returns {Type} a newly created instance of Type class
 	 */
 	constructor(name, validator, clone, defaultValue) {
 		if (process.env.NODE_ENV !== 'production') {
