@@ -76,21 +76,17 @@ class Type {
 				throw new IllegalArgumentException(
 					'Cannot create new type definition. Provided type name is not a valid string.'
 				);
-			}
-			if (!(validator instanceof Function && validator.length === 1)) {
+			} else if (!(validator instanceof Function && validator.length === 1)) {
 				throw new IllegalArgumentException(
 					'Cannot create new type definition. Provided function is not a valid validator function.'
 				);
-			}
-			if (!(clone instanceof Function && clone.length === 1)) {
+			} else if (!(clone instanceof Function && clone.length === 1)) {
 				throw new IllegalArgumentException(
 					'Cannot create new type definition. Provided function is not a valid clone function.'
 				);
-			}
-			if (defaultValue === undefined) {
+			} else if (defaultValue === undefined) {
 				throw new IllegalArgumentException('Cannot create new type definition. Provided default value is undefined.');
-			}
-			if (validator(defaultValue) !== true) {
+			} else if (validator(defaultValue) !== true) {
 				throw new IllegalArgumentException(
 					'Cannot create new type definition. Provided default value cannot be validated using provided validator.'
 				);
