@@ -13,7 +13,7 @@ module.exports = {
 	// 'allow-uncaught': false,
 	// 'async-only': false,
 	// bail: false,
-	// 'check-leaks': false,
+	'check-leaks': true,
 	// color: true,
 	// delay: false,
 	// diff: true,
@@ -31,7 +31,7 @@ module.exports = {
 	// // invert: false, // needs to be used with grep or fgrep
 	// jobs: 1,
 	// parallel: false,
-	// reporter: 'spec',
+	reporter: 'spec',
 	// 'reporter-option': ['foo=bar', 'baz=quux'],
 	// retries: 1,
 	// slow: '75',
@@ -42,7 +42,8 @@ module.exports = {
 	// 'trace-warnings': true, // node flags ok
 	// ui: 'bdd',
 	// 'v8-stack-trace-limit': 100, // V8 flags are prepended with "v8-"
-	// watch: false,
+	watch: true,
 	// 'watch-files': ['lib/**/*.js', 'test/**/*.js'],
+	'watch-files': ['test/**/*.js'],
 	// 'watch-ignore': ['lib/vendor']
 };
