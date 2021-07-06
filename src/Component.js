@@ -1,39 +1,73 @@
-import { checkInvalidSchemaAttributes } from './utility/Schema.js';
+import { checkSchemaProps, isValidSchema } from './utility/Schema.js';
 
-import SchemaNotFoundException from './exceptions/SchemaNotFoundException.js';
-import SchemaNotDefinedException from './exceptions/SchemaNotDefinedException.js';
+import IllegalArgumentException from './exceptions/IllegalArgumentException.js';
+import InterfaceException from './exceptions/InterfaceException.js';
 
+/**
+ * Abstract base class Component provides solid foundation for other component types to extend.
+ *
+ * @since 0.0.1
+ * @public
+ * @abstract
+ * @class
+ */
 class Component {
-	/**
-	 * Type of the component
-	 */
-	static #type;
-
-	/**
-	 * Unique id of the component
-	 * This id will be generated randomly by the component manager.
-	 */
-	#id;
-
 	/**
 	 * Schema of the component
 	 *
-	 * Schema must be defined properly and only once before the component is used,
-	 * schema must not be changed dynamically because it might create
-	 * inconsistency issues when database storage is taken in concern.
+	 * @see setSchema
+	 * @see getSchema
 	 *
+	 * @deprecated
+	 * Do not manually access or set the schema directly,
+	 * even if you know what you are doing!
+	 * <br>
+	 * This library is intended and designed to be used using only accessible methods.
+	 * Because of restrictions of private static variable of JS, schema is exposed.
+	 * <br>
+	 * Do not take the advantage of this always use {@link setSchema} and {@link getSchema} methods.
+	 *
+	 * @since 0.0.1
+	 * @static
+	 * @readonly
+	 * @type {Object}
 	 */
-	static #schema;
+	static schema;
+
+	/**
+	 * Properties of the component
+	 *
+	 * @since 0.0.1
+	 * @private
+	 * @type {Object}
+	 */
+	#props;
 
 	/* ================================ CONSTRUCTORS ================================ */
 
 	/**
 	 * Instantiates a component object from passed down properties
+	 *
+	 * @since 0.0.1
+	 * @public
 	 * @constructor
-	 * @param {Object} props - properties of the component,
-	 * all keys must be pre-scecified in the component schema.
+	 * @param {Object} componentProps - properties of the component,
+	 * all keys must be pre-specified in the component schema.
 	 */
 	constructor(componentProps) {
+		if (process.env.NODE_ENV !== 'production') {
+			if (this.constructor === Component) {
+				throw new InterfaceException('Cannot instantiate component class. Component class is abstract.');
+			}
+			const schema = this.constructor.getSchema();
+			if (!schema) {
+				throw new InterfaceException(
+					'Cannot instantiate component. Class schema is undefined. ' +
+						'Please consider setting valid schema before instantiating component.'
+				);
+			}
+		}
+
 		this.reset(componentProps);
 	}
 
@@ -42,11 +76,13 @@ class Component {
 	/**
 	 * Pre-init method gets executed just before a component is initialized
 	 */
-	preinit() {}
+	// eslint-disable-next-line class-methods-use-this
+	preInit() {}
 
 	/**
 	 * Init method gets executed after the component is initialized
 	 */
+	// eslint-disable-next-line class-methods-use-this
 	init() {}
 
 	/**
@@ -55,7 +91,7 @@ class Component {
 	update(props) {
 		// non production mode error for props with invalid schema
 		if (process.env.NODE_ENV !== 'production') {
-			checkInvalidSchemaAttributes(this.getSchema(), props);
+			checkSchemaProps(this.constructor.getSchema(), props);
 		}
 
 		Object.keys(props).forEach((key) => {
@@ -66,45 +102,46 @@ class Component {
 	/**
 	 * Pre-destroy method gets executed just before a component gets destroyed
 	 */
+	// eslint-disable-next-line class-methods-use-this
 	preDestroy() {}
 
 	/**
 	 * Post-destory method gets executed after the component is destroyed
 	 */
+	// eslint-disable-next-line class-methods-use-this
 	postDestory() {}
 
 	/**
 	 * Destorys the component
 	 */
+	// eslint-disable-next-line class-methods-use-this
 	destroy() {}
 
 	/**
-	 * Resets the component to its default initial state pre-specified by schema
+	 * Resets a component object from passed down properties using life cycle methods.
+	 *
+	 * @since 0.0.1
+	 * @public
+	 * @param {Object} componentProps - properties of the component,
+	 * all keys must be pre-specified in the component schema.
 	 */
-	reset(componentProps = {}) {
+	reset(componentProps) {
 		const props = componentProps || {};
+		const schema = this.constructor.getSchema();
 
-		const schema = this.getSchema();
-		if (schema ?? true) {
-			// component object can't be instantiated without schema
-			throw new SchemaNotFoundException(`Schema for this class is undefined.
-			Try calling the setSchema method before instantiating constructors of this class.`);
+		if (process.env.NODE_ENV !== 'production') {
+			checkSchemaProps(schema, props);
 		}
 
 		// executing pre instantiation operations
-		this.preinit();
+		this.preInit();
 
-		// non production mode error for props with invalid schema
-		if (process.env.NODE_ENV !== 'production') {
-			checkInvalidSchemaAttributes(schema, props);
-		}
-
-		// instantiating object
+		// getting defaults from pre-defined schema
 		Object.keys(schema).forEach((key) => {
 			if (Object.prototype.hasOwnProperty.call(props, key)) {
 				// creating identified schema defined properties from props
 				this[key] = props[key];
-			} else if (Object.prototype.hasOwnProperty.call(schema[key], 'default')) {
+			} else if (Object.prototype.hasOwnProperty.call(schema[key], 'defaultValue')) {
 				// creating identified schema defined properties from schema defaults
 				this[key] = schema[key].default;
 			} else {
@@ -120,28 +157,60 @@ class Component {
 
 	/* ================================ GETTERS ================================ */
 
-	getType() {}
+	/**
+	 * Getter method for schema of the class
+	 * @since 0.0.1
+	 * @public
+	 * @static
+	 * @returns {Object} schema of the class
+	 */
+	static getSchema() {
+		return this.schema;
+	}
 
-	getId() {}
-
-	static getSchema() {}
+	/**
+	 * Getter method for properties
+	 *
+	 * @since 0.0.1
+	 * @public
+	 * @returns {Object}
+	 */
+	getProps() {
+		return this.#props;
+	}
 
 	/* ================================ SETTERS ================================ */
 
 	/**
 	 * Defines the schema of the component class
-	 * @note schema of a component can be set only once
+	 *
+	 * @warning
+	 * Component schema is theoretically constant
+	 * i.e. you can set the schema of a component only once.
+	 *
+	 * @since 0.0.1
+	 * @public
+	 * @static
 	 * @param {object} schema schema of the this component class
+	 * @throws {InterfaceException} when setSchema is called directly from Component class
+	 * or setSchema is called when there is a already a valid schema present
+	 * @throws {IllegalArgumentException} when the schema is invalid
 	 */
 	static setSchema(schema) {
-		if (Component.#schema ?? true) {
-			throw new SchemaNotDefinedException(
-				'Provided schema is either null or undefined. Cannot set a schema which is not defined properly.'
-			);
+		if (process.env.NODE_ENV !== 'production') {
+			if (this === Component) {
+				throw new InterfaceException('Cannot set schema. Component class is abstract');
+			} else if (this.schema) {
+				throw new InterfaceException('Cannot set schema. Component schema can be set only once.');
+			} else if (!isValidSchema(schema)) {
+				throw new IllegalArgumentException('Cannot set schema. Provided schema is invalid.');
+			}
 		}
 
-		Component.#schema = schema;
+		this.schema = schema;
 	}
+
+	/* ================================ UTILITY ================================ */
 }
 
 export default Component;
