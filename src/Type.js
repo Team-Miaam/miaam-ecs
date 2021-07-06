@@ -55,6 +55,8 @@ class Type {
 	 */
 	#defaultValue;
 
+	/* ================================ CONSTRUCTORS ================================ */
+
 	/**
 	 * Instantiates a custom type schema from provided arguments
 	 *
@@ -98,16 +100,7 @@ class Type {
 		this.#defaultValue = this.clone(defaultValue);
 	}
 
-	/**
-	 * Getter method for accessing the type name
-	 *
-	 * @since 0.0.1
-	 * @public
-	 * @returns {String} the name of the type
-	 */
-	getName() {
-		return this.#name;
-	}
+	/* ================================ LIFECYCLE METHODS ================================ */
 
 	/**
 	 * Validates provided value against this type, i.e.
@@ -140,6 +133,19 @@ class Type {
 		return this.#clone(value);
 	}
 
+	/* ================================ GETTERS ================================ */
+
+	/**
+	 * Getter method for accessing the type name
+	 *
+	 * @since 0.0.1
+	 * @public
+	 * @returns {String} the name of the type
+	 */
+	getName() {
+		return this.#name;
+	}
+
 	/**
 	 * Getter method for accessing the default value of the type
 	 *
@@ -159,6 +165,8 @@ class Type {
 	getDefaultValue() {
 		return this.#defaultValue;
 	}
+
+	/* ================================ UTILITY ================================ */
 
 	/**
 	 * Returns the string representation of type
