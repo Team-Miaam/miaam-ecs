@@ -91,10 +91,33 @@ describe('Component', () => {
 	});
 
 	describe('Instantiation', () => {
-		class Position extends Component {}
-		Position.setSchema(positionSchema);
-		test('Component Instantiated with type default', () => {
-			const playerPosition = new Position();
+		test('Component instantiated with type default', () => {
+			const velocitySchema = {
+				x: { type: PrimitiveTypes.Number },
+				y: { type: PrimitiveTypes.Number },
+			};
+			class Velocity extends Component {}
+			Velocity.setSchema(velocitySchema);
+			const playerVelocity = new Velocity();
+			expect(playerVelocity.getProps()).to.deep.equals({
+				x: PrimitiveTypes.Number.getDefaultValue(),
+				y: PrimitiveTypes.Number.getDefaultValue(),
+			});
+		});
+		test('Component instantiated with schema defaults', () => {
+			const velocitySchema = {
+				x: { type: PrimitiveTypes.Number, defaultValue: 10 },
+				y: { type: PrimitiveTypes.Boolean },
+				z: { type: PrimitiveTypes.String, defaultValue: 'defaultZ' },
+			};
+			class Velocity extends Component {}
+			Velocity.setSchema(velocitySchema);
+			const playerVelocity = new Velocity();
+			expect(playerVelocity.getProps()).to.deep.equals({
+				x: velocitySchema.x.defaultValue,
+				y: PrimitiveTypes.Boolean.getDefaultValue(),
+				z: velocitySchema.z.defaultValue,
+			});
 		});
 	});
 });

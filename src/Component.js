@@ -95,7 +95,7 @@ class Component {
 		}
 
 		Object.keys(props).forEach((key) => {
-			this[key] = props[key];
+			this.#props[key] = props[key];
 		});
 	}
 
@@ -137,17 +137,17 @@ class Component {
 		this.preInit();
 
 		// getting defaults from pre-defined schema
+		this.#props = {};
 		Object.keys(schema).forEach((key) => {
 			if (Object.prototype.hasOwnProperty.call(props, key)) {
 				// creating identified schema defined properties from props
-				this[key] = props[key];
+				this.#props[key] = props[key];
 			} else if (Object.prototype.hasOwnProperty.call(schema[key], 'defaultValue')) {
 				// creating identified schema defined properties from schema defaults
-				this[key] = schema[key].default;
+				this.#props[key] = schema[key].defaultValue;
 			} else {
 				// creating identified schema defined properties from type defaults
-				const { type } = schema[key];
-				this[key] = type.default;
+				this.#props[key] = schema[key].type.getDefaultValue();
 			}
 		});
 
