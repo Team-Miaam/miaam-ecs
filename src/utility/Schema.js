@@ -1,6 +1,8 @@
 /**
- * @namespace Schema
+ * TODO Categorize documentation
  */
+import IllegalArgumentException from '../exceptions/IllegalArgumentException.js';
+import InterfaceException from '../exceptions/InterfaceException.js';
 import Type from '../Type.js';
 
 /**
@@ -8,7 +10,6 @@ import Type from '../Type.js';
  * i.e. this function ensures that schema follows the schemas schema
  *
  * @since 0.0.1
- * @memberof Schema
  * @public
  * @param {Object} schema the schema to check
  * @returns {Boolean} whether the provided schema is valid
@@ -33,6 +34,31 @@ const isValidSchema = (schema) => {
 	);
 };
 
-const checkInvalidSchemaAttributes = (schema, props) => {};
+/**
+ * Checks whether attributes in the properties are compliant with the provided schema
+ *
+ * @since 0.0.1
+ * @public
+ * @param {Object} schema valid schema to check against
+ * @param {Object} props attributes of property to check
+ * @throws {InterfaceException} when there are attributes non-compliant with the schema
+ */
+const checkSchemaProps = (schema, props) => {
+	if (!schema || !props) {
+		throw new IllegalArgumentException('Cannot initiate checking. Provided props is either null or undefined.');
+	}
+	const invalidProps = [];
+	Object.keys(props).forEach((key) => {
+		if (!Object.prototype.hasOwnProperty.call(schema, key)) {
+			invalidProps.push(key);
+		}
+	});
 
-export { isValidSchema, checkInvalidSchemaAttributes };
+	if (invalidProps.length > 0) {
+		throw new InterfaceException(
+			`Found non-compliant attributes: {${invalidProps}}. Property attributes are non-compliant with the schema.`
+		);
+	}
+};
+
+export { isValidSchema, checkSchemaProps };
