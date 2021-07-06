@@ -61,6 +61,8 @@ class Type {
 	 * Instantiates a custom type schema from provided arguments
 	 *
 	 * @since 0.0.1
+	 * @public
+	 * @constructor
 	 * @param {String} name name of the type
 	 * @param {Function} clone function that handles the responsibility of cloning values of this type
 	 * @param {Function} validator function that validates type of any value against this type
