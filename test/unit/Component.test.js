@@ -9,12 +9,8 @@ import PrimitiveTypes from '../../src/constants/types/PrimitiveTypes.js';
 import IllegalArgumentException from '../../src/exceptions/IllegalArgumentException.js';
 
 /**
- * Component class must be very simple and efficient
- * => Component schema props must not be directly accessible
  * => update method should update the props of the component only
  * => clone method for cloning existing component
- * => Two components schema should be different
- * => Components should dispose themselves
  */
 
 describe('Component', () => {
@@ -104,6 +100,7 @@ describe('Component', () => {
 				y: PrimitiveTypes.Number.getDefaultValue(),
 			});
 		});
+
 		test('Component instantiated with schema defaults', () => {
 			const velocitySchema = {
 				x: { type: PrimitiveTypes.Number, defaultValue: 10 },
@@ -118,6 +115,39 @@ describe('Component', () => {
 				y: PrimitiveTypes.Boolean.getDefaultValue(),
 				z: velocitySchema.z.defaultValue,
 			});
+		});
+	});
+
+	describe('Implementation', () => {
+		test('setSchema and getSchema', () => {
+			class Position extends Component {}
+			expect(() => Position.setSchema(positionSchema)).not.to.throw(Error);
+			expect(Position.getSchema()).deep.equals(positionSchema);
+		});
+
+		test('update', () => {
+			class Position extends Component {}
+			Position.setSchema(positionSchema);
+			const playerPosition = new Position({ x: 2, y: 2 });
+
+			playerPosition.update({ x: 4, y: 4 });
+			expect(playerPosition.getProps()).to.deep.equals({ x: 4, y: 4 });
+			playerPosition.update({ x: playerPosition.getProps().x + 2, y: playerPosition.getProps().y + 2 });
+			expect(playerPosition.getProps()).to.deep.equals({ x: 6, y: 6 });
+		});
+
+		test('reset', () => {
+			class Position extends Component {
+				init() {
+					this.update({ x: this.getProps().x + 2, y: this.getProps().y + 2 });
+				}
+			}
+			Position.setSchema(positionSchema);
+			const playerPosition = new Position({ x: 2, y: 2 });
+
+			expect(playerPosition.getProps()).to.deep.equals({ x: 4, y: 4 });
+			playerPosition.reset({ x: 0, y: 0 });
+			expect(playerPosition.getProps()).to.deep.equals({ x: 2, y: 2 });
 		});
 	});
 });

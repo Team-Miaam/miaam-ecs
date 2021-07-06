@@ -74,7 +74,13 @@ class Component {
 	/* ================================ LIFECYCLE METHODS ================================ */
 
 	/**
-	 * Pre-init method gets executed just before a component is initialized
+	 * Pre-init method gets executed just before a component is initialized.
+	 * <br>
+	 * This function runs before any of the properties of the component is initialized
+	 * when the component is instantiated or reset.
+	 *
+	 * @since 0.0.1
+	 * @public
 	 */
 	// eslint-disable-next-line class-methods-use-this
 	preInit() {}
@@ -159,6 +165,7 @@ class Component {
 
 	/**
 	 * Getter method for schema of the class
+	 *
 	 * @since 0.0.1
 	 * @public
 	 * @static
@@ -170,6 +177,13 @@ class Component {
 
 	/**
 	 * Getter method for properties
+	 *
+	 * @warning
+	 * it is possible to manually change the props,
+	 * but it is not desirable even when you know what you are doing!
+	 * It may create inconsistency issues.
+	 * Immutability constraint is not enforced because,
+	 * it is costly from the point of view of performance.
 	 *
 	 * @since 0.0.1
 	 * @public
