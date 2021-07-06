@@ -105,10 +105,21 @@ describe('Schema', () => {
 			);
 		});
 
+		test('data types of attributes must be validated against pre-defined schema types', () => {
+			expect(() => checkSchemaProps(positionSchema, { x: '1' })).to.throw(
+				InterfaceException,
+				'attributes are non-compliant with the schema'
+			);
+			expect(() => checkSchemaProps(positionSchema, { x: '1', z: 'true' })).to.throw(
+				InterfaceException,
+				'attributes are non-compliant with the schema'
+			);
+		});
+
 		test('Valid props follow the schema compliancy', () => {
-			let position = { x: 1, y: 2, z: 3 };
+			let position = { x: 1, y: '2', z: true };
 			expect(() => checkSchemaProps(positionSchema, position)).to.not.throw(Error);
-			position = { x: 1, y: 2 };
+			position = { x: 1, y: '2' };
 			expect(() => checkSchemaProps(positionSchema, position)).to.not.throw(Error);
 			position = {};
 			expect(() => checkSchemaProps(positionSchema, position)).to.not.throw(Error);

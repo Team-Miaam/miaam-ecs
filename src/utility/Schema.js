@@ -51,6 +51,8 @@ const checkSchemaProps = (schema, props) => {
 	Object.keys(props).forEach((key) => {
 		if (!Object.prototype.hasOwnProperty.call(schema, key)) {
 			invalidProps.push(key);
+		} else if (!schema[key].type.validate(props[key])) {
+			invalidProps.push(key);
 		}
 	});
 
