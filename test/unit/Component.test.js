@@ -7,9 +7,9 @@ import Component from '../../src/Component.js';
 import InterfaceException from '../../src/exceptions/InterfaceException.js';
 import PrimitiveTypes from '../../src/constants/types/PrimitiveTypes.js';
 import IllegalArgumentException from '../../src/exceptions/IllegalArgumentException.js';
+import Type from '../../src/Type.js';
 
 /**
- * => update method should update the props of the component only
  * => clone method for cloning existing component
  */
 
@@ -84,6 +84,10 @@ describe('Component', () => {
 			expect(playerPosition.reset instanceof Function).to.be.true;
 			expect(playerPosition.reset.length).equals(1);
 		});
+
+		test('Instances of Component must be able to clone itself', () => {
+			expect(playerPosition.clone instanceof Function).to.be.true;
+		});
 	});
 
 	describe('Instantiation', () => {
@@ -116,6 +120,15 @@ describe('Component', () => {
 				z: velocitySchema.z.defaultValue,
 			});
 		});
+
+		test('Components must be instantiated using valid props', () => {
+			class Position extends Component {}
+			Position.setSchema(positionSchema);
+			expect(() => new Position({ x: '4' })).to.throw(
+				InterfaceException,
+				'attributes are non-compliant with the schema'
+			);
+		});
 	});
 
 	describe('Implementation', () => {
@@ -134,6 +147,11 @@ describe('Component', () => {
 			expect(playerPosition.getProps()).to.deep.equals({ x: 4, y: 4 });
 			playerPosition.update({ x: playerPosition.getProps().x + 2, y: playerPosition.getProps().y + 2 });
 			expect(playerPosition.getProps()).to.deep.equals({ x: 6, y: 6 });
+
+			expect(() => playerPosition.update({ x: '4', y: '5' })).to.throw(
+				InterfaceException,
+				'attributes are non-compliant with the schema'
+			);
 		});
 
 		test('reset', () => {
@@ -148,6 +166,30 @@ describe('Component', () => {
 			expect(playerPosition.getProps()).to.deep.equals({ x: 4, y: 4 });
 			playerPosition.reset({ x: 0, y: 0 });
 			expect(playerPosition.getProps()).to.deep.equals({ x: 2, y: 2 });
+		});
+
+		test('clone', () => {
+			const CustomType = new Type(
+				'Custom',
+				// eslint-disable-next-line no-unused-vars
+				(_) => true,
+				(value) => JSON.parse(JSON.stringify(value)),
+				{ a: { b: { c: 'd' } } }
+			);
+
+			class CustomComponent extends Component {}
+			CustomComponent.setSchema({ a: { type: CustomType } });
+
+			const custom = new CustomComponent();
+			const customClone = custom.clone();
+
+			expect(customClone.getProps().a).not.equals(custom.getProps().a);
+			expect(customClone.getProps().a).deep.equals(custom.getProps().a);
+
+			custom.update({ a: { a: { b: { c: 'd' } } } });
+
+			expect(customClone.getProps().a).not.equals(custom.getProps().a);
+			expect(customClone.getProps().a).deep.equals(custom.getProps().a);
 		});
 	});
 });

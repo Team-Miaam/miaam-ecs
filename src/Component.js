@@ -225,6 +225,26 @@ class Component {
 	}
 
 	/* ================================ UTILITY ================================ */
+
+	/**
+	 * Clone i.e. deep copies the current component
+	 *
+	 * @since 0.0.1
+	 * @public
+	 * @returns {Component} cloned version of current component
+	 */
+	clone() {
+		const schema = this.constructor.getSchema();
+		const props = this.getProps();
+
+		const clonedProps = {};
+		Object.keys(schema).forEach((key) => {
+			clonedProps[key] = schema[key].type.clone(props[key]);
+		});
+
+		const clonedComponent = new this.constructor(clonedProps);
+		return clonedComponent;
+	}
 }
 
 export default Component;
