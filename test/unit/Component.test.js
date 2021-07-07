@@ -9,10 +9,6 @@ import PrimitiveTypes from '../../src/constants/types/PrimitiveTypes.js';
 import IllegalArgumentException from '../../src/exceptions/IllegalArgumentException.js';
 import Type from '../../src/Type.js';
 
-/**
- * => clone method for cloning existing component
- */
-
 describe('Component', () => {
 	const positionSchema = {
 		x: { type: PrimitiveTypes.Number },
