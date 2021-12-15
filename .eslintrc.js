@@ -1,7 +1,6 @@
 module.exports = {
 	env: {
 		browser: true,
-		node: true,
 	},
 	extends: ['airbnb-base', 'prettier'],
 	parser: '@babel/eslint-parser',
@@ -18,5 +17,4 @@ module.exports = {
 		'max-len': ['error', { code: 120, tabWidth: 2 }],
 		'import/extensions': ['error', 'always'],
 	},
-	settings: {},
 };

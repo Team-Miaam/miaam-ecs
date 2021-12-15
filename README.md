@@ -1,3 +1,3 @@
-# miaam-ecs
+# js-base-starter
 
-ECS Framework by Miaam
+Starter for JS Projects using webpack, eslint, babel
