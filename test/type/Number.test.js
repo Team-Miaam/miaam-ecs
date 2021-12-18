@@ -8,10 +8,15 @@ describe('Number', () => {
 	test('Number is a instance of type class', () => {
 		expect(Number).to.instanceOf(Type);
 	});
-	test('Check validation function for valid', () => {
+
+	test('Validation function waorks properly', () => {
 		expect(Number.validate(12)).to.true;
-	});
-	test('Check validation function for invalid', () => {
 		expect(Number.validate('12')).to.false;
 	});
+
+	test('Clone function function works properly', () => {
+		expect(Number.clone(1222)).to.equals(1222);
+		expect(Number.clone(1222)).to.not.equals(12);
+	});
+
 });
