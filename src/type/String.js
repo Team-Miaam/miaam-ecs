@@ -2,9 +2,9 @@ import Type from '../core/Type.js';
 
 const String = new Type({
 	name: 'String',
-	validdator: (value) => typeof value === 'string',
+	validator: (value) => typeof value === 'string',
 	clone: (value) => value,
-	defaultValue: ' ',
+	defaultValue: '',
 	serialize: (value) => value,
 	deserialize: (value) => value, // TODO figure out what returns later
 });

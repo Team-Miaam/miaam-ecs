@@ -18,5 +18,4 @@ describe('Number', () => {
 		expect(Number.clone(1222)).to.equals(1222);
 		expect(Number.clone(1222)).to.not.equals(12);
 	});
-
 });
