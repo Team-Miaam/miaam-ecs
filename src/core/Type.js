@@ -56,6 +56,16 @@ class Type {
 	#serialize;
 
 	/**
+	 * deSerialize function which deserializes the value of this specific type
+	 *
+	 * @since 0.0.1
+	 * @constant
+	 * @private
+	 * @type {Function}
+	 */
+	#deserialize;
+
+	/**
 	 * Default value of the type when not initialized
 	 *
 	 * @since 0.0.1
@@ -83,7 +93,7 @@ class Type {
 	 * or default value is undefined
 	 * or the default value cannot be validated against provided validator
 	 */
-	constructor({ name, validator, clone, defaultValue, serialize }) {
+	constructor({ name, validator, clone, defaultValue, serialize, deserialize }) {
 		if (process.env.NODE_ENV !== 'production') {
 			if (!(typeof name === 'string')) {
 				throw new IllegalArgumentException(
@@ -111,6 +121,7 @@ class Type {
 		this.#clone = clone;
 		this.#defaultValue = this.clone(defaultValue);
 		this.#serialize = serialize;
+		this.#deserialize = deserialize;
 	}
 
 	/* ================================ LIFECYCLE METHODS ================================ */
@@ -153,6 +164,10 @@ class Type {
 			}
 		}
 		return this.#serialize(value);
+	}
+
+	deserialize(value) {
+		return this.#deserialize(value);
 	}
 
 	/* ================================ GETTERS ================================ */
