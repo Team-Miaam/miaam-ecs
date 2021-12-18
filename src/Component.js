@@ -126,6 +126,11 @@ class Component {
 	/**
 	 * Resets a component object from passed down properties using life cycle methods.
 	 *
+	 * @DevNote
+	 * This lifecycle method would be hugely helpful in implementing the pool pattern
+	 * of same type of components, the reset method will be particularly helpful for reclaiming
+	 * the dead objects in the pool
+	 *
 	 * @since 0.0.1
 	 * @public
 	 * @param {Object} componentProps - properties of the component,
