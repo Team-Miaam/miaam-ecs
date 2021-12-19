@@ -107,6 +107,8 @@ class Type {
 	 * or deserialize is not a function with one argument
 	 */
 	constructor({ name, defaultValue, validator, clone, serialize, deserialize }) {
+		this.#validator = validator;
+
 		if (process.env.NODE_ENV !== 'production') {
 			if (!(typeof name === 'string')) {
 				throw new IllegalArgumentError('Cannot create new type definition. Provided type name is not a valid string.');
@@ -120,7 +122,7 @@ class Type {
 				);
 			} else if (defaultValue === undefined) {
 				throw new IllegalArgumentError('Cannot create new type definition. Provided default value is undefined.');
-			} else if (validator(defaultValue) !== true) {
+			} else if (this.validate(defaultValue) !== true) {
 				throw new IllegalArgumentError(
 					'Cannot create new type definition. Provided default value cannot be validated using provided validator.'
 				);
@@ -136,11 +138,11 @@ class Type {
 		}
 
 		this.#name = name;
-		this.#validator = validator;
 		this.#clone = clone;
 		this.#defaultValue = this.clone(defaultValue);
 		this.#serialize = serialize;
 		this.#deserialize = deserialize;
+		Object.preventExtensions(this);
 	}
 
 	/* ================================ LIFECYCLE METHODS ================================ */
@@ -155,7 +157,11 @@ class Type {
 	 * @returns {boolean} true if the provided value can be validated against this type
 	 */
 	validate(value) {
-		return this.#validator(value);
+		try {
+			return this.#validator(value);
+		} catch (error) {
+			return false;
+		}
 	}
 
 	/**
@@ -181,7 +187,7 @@ class Type {
 	 *
 	 * @since 0.0.1
 	 * @public
-	 * @param {any} value the value to serialize 
+	 * @param {any} value the value to serialize
 	 * @returns {any} the serialized value
 	 * @throws {IllegalArgumentError} when value cannot be validated against this type
 	 */
@@ -199,7 +205,7 @@ class Type {
 	 *
 	 * @since 0.0.1
 	 * @public
-	 * @param {any} value the value to deserialize 
+	 * @param {any} value the value to deserialize
 	 * @returns {any} the deserialized value
 	 * @throws {IllegalArgumentError} when deserialized value cannot be validated against this type
 	 */
