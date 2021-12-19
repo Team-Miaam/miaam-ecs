@@ -1,17 +1,17 @@
 /**
  *
- * Interface Exception can be thrown when
+ * Interface Error can be thrown when
  * when users of the API broke the contract or the critical warnings
  *
  * @since 0.0.1
  * @public
  * @class
  */
-class InterfaceException extends Error {
+class InterfaceError extends Error {
 	constructor(...params) {
 		super(params);
-		this.name = 'InterfaceException';
+		this.name = 'InterfaceError';
 	}
 }
 
-export default InterfaceException;
+export default InterfaceError;
