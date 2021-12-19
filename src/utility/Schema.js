@@ -1,9 +1,9 @@
 /**
  * TODO Categorize documentation
  */
-import IllegalArgumentException from '../exceptions/IllegalArgumentException.js';
-import InterfaceException from '../exceptions/InterfaceException.js';
-import Type from '../Type.js';
+import IllegalArgumentError from '../error/IllegalArgumentError.js';
+import InterfaceError from '../error/InterfaceError.js';
+import Type from '../core/Type.js';
 
 /**
  * Check if the provided schema follows the structure of a valid schema,
@@ -41,13 +41,15 @@ const isValidSchema = (schema) => {
  * @public
  * @param {Object} schema valid schema to check against
  * @param {Object} props attributes of property to check
- * @throws {InterfaceException} when there are attributes non-compliant with the schema
+ * @throws {InterfaceError} when there are attributes non-compliant with the schema
  */
 const checkSchemaProps = (schema, props) => {
 	if (!schema || !props) {
-		throw new IllegalArgumentException('Cannot initiate checking. Provided props is either null or undefined.');
+		throw new IllegalArgumentError('Cannot initiate checking. Provided props is either null or undefined.');
 	}
 	const invalidProps = [];
+	// This utility function is mainly devised to be compliant with the component update method
+	// and since update doesn't require all the attributes, so we are looping over the props instead of schema
 	Object.keys(props).forEach((key) => {
 		if (!Object.prototype.hasOwnProperty.call(schema, key)) {
 			invalidProps.push(key);
@@ -57,7 +59,7 @@ const checkSchemaProps = (schema, props) => {
 	});
 
 	if (invalidProps.length > 0) {
-		throw new InterfaceException(
+		throw new InterfaceError(
 			`Found non-compliant attributes: {${invalidProps}}. Property attributes are non-compliant with the schema.`
 		);
 	}
