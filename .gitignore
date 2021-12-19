@@ -105,3 +105,6 @@ dist
 
 # Ignoring package-lock
 package-lock.json
+
+# Ignoring the docs
+docs
