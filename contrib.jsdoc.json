@@ -1,0 +1,28 @@
+{
+	"opts": {
+		"encoding": "utf8",
+		"private": true,
+		"lenient": false,
+		"recurse": true,
+		"destination": "./docs/contrib",
+		"template": "./node_modules/@pixi/jsdoc-template"
+	},
+	"applicationName": "Miaam",
+	"meta": {
+		"title": "Miaam",
+		"description": "Web Game Framework",
+		"keyword": "Game Framework Javascript"
+	},
+	"linenums": true,
+	"source": {
+		"include": ["./src/"],
+		"includePattern": ".+\\.js(doc|x)?$",
+		"excludePattern": "(^|\\/|\\\\)_"
+	},
+	"sourceType": "module",
+	"templates": {
+		"default": {
+			"outputSourceFiles": true
+		}
+	}
+}
