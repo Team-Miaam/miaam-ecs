@@ -1,5 +1,5 @@
 /**
- * TODO Categorize documentation
+ * @module utils/Schema
  */
 import IllegalArgumentError from '../error/IllegalArgumentError.js';
 import InterfaceError from '../error/InterfaceError.js';

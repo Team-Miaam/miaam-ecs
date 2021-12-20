@@ -99,11 +99,17 @@ class Type {
 	 * @property {Function} serialize function that serializes the value of this type
 	 * @property {Function} deserialize function that deserializes the value of this type
 	 * @throws {IllegalArgumentError} when type of name is not string
+	 * <br>
 	 * or default value is undefined
+	 * <br>
 	 * or the default value cannot be validated against provided validator
+	 * <br>
 	 * or validator is not a function with one argument
+	 * <br>
 	 * or clone is not a function with one argument
+	 * <br>
 	 * or serialize is not a function with one argument
+	 * <br>
 	 * or deserialize is not a function with one argument
 	 */
 	constructor({ name, defaultValue, validator, clone, serialize, deserialize }) {

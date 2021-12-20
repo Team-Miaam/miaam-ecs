@@ -5,9 +5,11 @@
 	"scripts": {
 		"format": "prettier --write .",
 		"lint": "eslint .",
+		"lint:staged": "lint-staged --config .lintstagedrc.json",
 		"dev:webpack:build": "webpack --config ./webpack.dev.config.js",
 		"dev": "concurrently npm:dev:*",
-		"test": "mocha || exit 0",
+		"test": "mocha",
+		"test:watch": "mocha --watch || exit 0",
 		"doc:contrib": "rm -rf ./docs/ && jsdoc -c ./contrib.jsdoc.json -R README.md",
 		"doc:dev": "rm -rf ./docs/ && jsdoc -c ./dev.jsdoc.json -R README.md",
 		"doc": "concurrently npm:doc:*"
@@ -36,6 +38,7 @@
 		"eslint-plugin-prettier": "^3.4.1",
 		"husky": "^7.0.4",
 		"jsdoc": "^3.6.7",
+		"lint-staged": "^12.1.3",
 		"mocha": "^9.1.3",
 		"prettier": "^2.4.1",
 		"source-map-loader": "^3.0.0",
