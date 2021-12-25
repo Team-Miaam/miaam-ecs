@@ -234,7 +234,7 @@ class Type {
 	 * @public
 	 * @returns {string} the name of the type
 	 */
-	getName() {
+	get name() {
 		return this.#name;
 	}
 
@@ -254,7 +254,7 @@ class Type {
 	 * @public
 	 * @returns {any} the default value of the type
 	 */
-	getDefaultValue() {
+	get defaultValue() {
 		return this.#defaultValue;
 	}
 
@@ -262,13 +262,14 @@ class Type {
 
 	/**
 	 * Returns the string representation of type
+	 * Overrides the builtin representation of this type in JS
 	 *
 	 * @since 0.0.1
 	 * @public
 	 * @returns {string} string representation
 	 */
 	toString() {
-		return `Type: ${this.getName()}`;
+		return `Type: ${this.name}`;
 	}
 }
 
