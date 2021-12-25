@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import { describe, test } from 'mocha';
 import { isValidSchema, checkSchemaProps } from '../../src/utility/Schema.js';
-import PrimitiveTypes from '../../src/type/PrimitiveTypes.js';
+import * as PrimitiveTypes from '../../src/type/PrimitiveTypes.js';
 import InterfaceError from '../../src/error/InterfaceError.js';
 import IllegalArgumentError from '../../src/error/IllegalArgumentError.js';
 
@@ -37,7 +37,7 @@ describe('Schema', () => {
 			expect(isValidSchema(position)).to.be.false;
 		});
 
-		test('type attribute must be instances of Type', () => {
+		test('type attribute must be an instance of Type', () => {
 			let position = {
 				x: { type: 'int' },
 				y: { type: 'int' },
@@ -63,6 +63,26 @@ describe('Schema', () => {
 			};
 			expect(isValidSchema(position)).to.be.true;
 		});
+
+		test('serialize attribute must be of type boolean', () => {
+			let position = {
+				x: { type: PrimitiveTypes.Number, serialize: '' },
+				y: { type: PrimitiveTypes.Number },
+			};
+			expect(isValidSchema(position)).to.be.false;
+
+			position = {
+				x: { type: PrimitiveTypes.Number },
+				y: { type: PrimitiveTypes.Number, serialize: undefined },
+			};
+			expect(isValidSchema(position)).to.be.false;
+
+			position = {
+				x: { type: PrimitiveTypes.Number, serialize: false },
+				y: { type: PrimitiveTypes.Number },
+			};
+			expect(isValidSchema(position)).to.be.true;
+		});
 	});
 
 	describe('Validate Props Schema', () => {
@@ -77,18 +97,12 @@ describe('Schema', () => {
 				IllegalArgumentError,
 				'props is either null or undefined'
 			);
-			expect(() => checkSchemaProps(null, null)).to.throw(
-				IllegalArgumentError,
-				'props is either null or undefined'
-			);
+			expect(() => checkSchemaProps(null, null)).to.throw(IllegalArgumentError, 'props is either null or undefined');
 			expect(() => checkSchemaProps(positionSchema, null)).to.throw(
 				IllegalArgumentError,
 				'props is either null or undefined'
 			);
-			expect(() => checkSchemaProps(undefined, {})).to.throw(
-				IllegalArgumentError,
-				'props is either null or undefined'
-			);
+			expect(() => checkSchemaProps(undefined, {})).to.throw(IllegalArgumentError, 'props is either null or undefined');
 		});
 
 		test('all the property attributes must be defined in the schema', () => {
