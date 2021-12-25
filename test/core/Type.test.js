@@ -85,11 +85,11 @@ describe('Type', () => {
 
 	describe('Interface', () => {
 		test('Instances of Type must have a getter method for name', () => {
-			expect(newType.getName instanceof Function).to.be.true;
+			expect(typeof newType.name).to.eq('string');
 		});
 
 		test('Instances of Type must have a getter method for defaultValue', () => {
-			expect(newType.getDefaultValue instanceof Function).to.be.true;
+			expect(newType.defaultValue).to.exist;
 		});
 
 		test('Instances of Type must have access to validate method', () => {
@@ -118,8 +118,8 @@ describe('Type', () => {
 	});
 
 	describe('Implementation', () => {
-		test('getName', () => {
-			expect(newType.getName()).equals(name);
+		test('get name', () => {
+			expect(newType.name).equals(name);
 		});
 
 		test('validate', () => {
@@ -142,20 +142,21 @@ describe('Type', () => {
 			expect(newType.deserialize(newType.serialize(value))).to.deep.equals(value);
 		});
 
-		test('getDefaultString', () => {
-			expect(newType.getDefaultValue()).to.deep.equals(defaultValue);
+		test('get defaultValue', () => {
+			expect(newType.defaultValue).to.deep.equals(defaultValue);
 		});
 
 		test('toString', () => {
 			expect(newType.toString()).equals(`Type: ${name}`);
+			expect(`${newType}`).equals(`Type: ${name}`);
 		});
 	});
 
 	describe('Reliability', () => {
 		let dynamicTypeName = 'newType';
 		let simpleValidator = (_value) => true;
-		let jsonSerialization = (value) => JSON.stringify(value);
-		let jsonDeSerialization = (value) => JSON.parse(value);
+		const jsonSerialization = (value) => JSON.stringify(value);
+		const jsonDeSerialization = (value) => JSON.parse(value);
 		let jsonClone = (value) => jsonDeSerialization(jsonSerialization(value));
 		const properType = new Type({
 			name: dynamicTypeName,
@@ -168,7 +169,7 @@ describe('Type', () => {
 
 		test('type name must be free from external side effects', () => {
 			dynamicTypeName = 'changed';
-			expect(properType.getName()).equals('newType');
+			expect(properType.name).equals('newType');
 		});
 
 		test('validator method must be free from external side effects', () => {
@@ -183,7 +184,7 @@ describe('Type', () => {
 
 		test('default value must be a clone of passed argument', () => {
 			defaultValue.value = 'changed';
-			expect(properType.getDefaultValue().value).equals('default');
+			expect(properType.defaultValue.value).equals('default');
 		});
 
 		test('prevent adding new properties to object', () => {
