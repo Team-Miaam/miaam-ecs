@@ -29,8 +29,29 @@ const isValidSchema = (schema) => {
 		return false;
 	}
 
-	return attributes.every(
-		(value) => value && Object.prototype.hasOwnProperty.call(value, 'type') && value.type instanceof Type
+	const attributeCriterion = [
+		(attribute) => Object.prototype.hasOwnProperty.call(attribute, 'type') && attribute.type instanceof Type,
+		(attribute) => {
+			if (Object.prototype.hasOwnProperty.call(attribute, 'serialize')) {
+				return typeof attribute.serialize === 'boolean';
+			}
+			return true;
+		},
+	];
+
+	return attributes.every((attribute) =>
+		attributeCriterion
+			.map((criteria) => {
+				try {
+					return criteria(attribute);
+				} catch (error) {
+					if (error instanceof TypeError) {
+						return false;
+					}
+					throw error;
+				}
+			})
+			.every((assertion) => assertion === true)
 	);
 };
 
@@ -47,16 +68,11 @@ const checkSchemaProps = (schema, props) => {
 	if (!schema || !props) {
 		throw new IllegalArgumentError('Cannot initiate checking. Provided props is either null or undefined.');
 	}
-	const invalidProps = [];
 	// This utility function is mainly devised to be compliant with the component update method
 	// and since update doesn't require all the attributes, so we are looping over the props instead of schema
-	Object.keys(props).forEach((key) => {
-		if (!Object.prototype.hasOwnProperty.call(schema, key)) {
-			invalidProps.push(key);
-		} else if (!schema[key].type.validate(props[key])) {
-			invalidProps.push(key);
-		}
-	});
+	const invalidProps = Object.keys(props).filter(
+		(key) => !(Object.prototype.hasOwnProperty.call(schema, key) && schema[key].type.validate(props[key]))
+	);
 
 	if (invalidProps.length > 0) {
 		throw new InterfaceError(
