@@ -60,7 +60,7 @@ class Component {
 	constructor(componentProps) {
 		if (process.env.NODE_ENV !== 'production') {
 			if (this.constructor === Component) {
-				throw new InterfaceError('Cannot instantiate component class. Component class is abstract.');
+				throw new InterfaceError('Cannot instantiate Component class. Component class is abstract.');
 			}
 			const { schema } = this.constructor;
 			if (!schema) {
