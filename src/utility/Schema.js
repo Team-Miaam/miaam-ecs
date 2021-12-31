@@ -1,8 +1,8 @@
 /**
  * @module utils/Schema
  */
-import IllegalArgumentError from '../error/IllegalArgumentError.js';
-import InterfaceError from '../error/InterfaceError.js';
+import IllegalArgumentError from '../error/IllegalArgument.error.js';
+import InterfaceError from '../error/Interface.error.js';
 import Type from '../core/Type.js';
 
 /**

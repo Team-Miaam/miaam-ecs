@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-expressions */
 import { expect } from 'chai';
 import { describe, test } from 'mocha';
-import { isValidSchema, checkSchemaProps } from '../../src/utility/Schema.js';
-import * as PrimitiveTypes from '../../src/type/PrimitiveTypes.js';
-import InterfaceError from '../../src/error/InterfaceError.js';
-import IllegalArgumentError from '../../src/error/IllegalArgumentError.js';
+import { isValidSchema, checkSchemaProps } from '../../../src/utility/Schema.js';
+import * as PrimitiveTypes from '../../../src/type/PrimitiveTypes.js';
+import InterfaceError from '../../../src/error/Interface.error.js';
+import IllegalArgumentError from '../../../src/error/IllegalArgument.error.js';
 
 describe('Schema', () => {
 	describe('Validation', () => {

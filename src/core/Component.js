@@ -1,7 +1,7 @@
 import { checkSchemaProps, isValidSchema } from '../utility/Schema.js';
 
-import IllegalArgumentError from '../error/IllegalArgumentError.js';
-import InterfaceError from '../error/InterfaceError.js';
+import IllegalArgumentError from '../error/IllegalArgument.error.js';
+import InterfaceError from '../error/Interface.error.js';
 
 /**
  * Abstract base class Component provides solid foundation for other component types to extend.
