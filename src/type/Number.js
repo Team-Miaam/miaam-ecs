@@ -6,6 +6,6 @@ const Number = new Type({
 	clone: (value) => value,
 	defaultValue: 0,
 	serialize: (value) => value,
-	deserialize: (value) => value, // TODO figure out what retuns later
+	deserialize: (value) => value,
 });
 export default Number;

@@ -1,4 +1,4 @@
-import IllegalArgumentError from '../error/IllegalArgumentError.js';
+import IllegalArgumentError from '../error/IllegalArgument.error.js';
 
 /**
  * <p>
@@ -148,7 +148,7 @@ class Type {
 		this.#defaultValue = this.clone(defaultValue);
 		this.#serialize = serialize;
 		this.#deserialize = deserialize;
-		Object.preventExtensions(this);
+		Object.seal(this);
 	}
 
 	/* ================================ LIFECYCLE METHODS ================================ */

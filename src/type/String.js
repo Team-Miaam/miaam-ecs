@@ -6,6 +6,6 @@ const String = new Type({
 	clone: (value) => value,
 	defaultValue: '',
 	serialize: (value) => value,
-	deserialize: (value) => value, // TODO figure out what returns later
+	deserialize: (value) => value, // TODO figure out what to return later
 });
 export default String;

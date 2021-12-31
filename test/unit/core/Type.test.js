@@ -4,8 +4,8 @@
 
 import { expect } from 'chai';
 import { describe, test } from 'mocha';
-import IllegalArgumentError from '../../src/error/IllegalArgumentError.js';
-import Type from '../../src/core/Type.js';
+import IllegalArgumentError from '../../../src/error/IllegalArgument.error.js';
+import Type from '../../../src/core/Type.js';
 
 describe('Type', () => {
 	const name = 'newType';

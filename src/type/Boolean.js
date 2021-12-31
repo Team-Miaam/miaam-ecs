@@ -6,7 +6,7 @@ const Boolean = new Type({
 	clone: (value) => value,
 	defaultValue: false,
 	serialize: (value) => value,
-	deserialize: (value) => value, // TODO figure out rteturn value later
+	deserialize: (value) => value,
 });
 
 export default Boolean;
