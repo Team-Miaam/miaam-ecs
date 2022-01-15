@@ -3,9 +3,7 @@ import InterfaceError from '../error/Interface.error.js';
 class Scene {
 	#entities;
 
-	#components = {
-		'Position': [postion1, ....]
-	};
+	#components;
 
 	#systems;
 
