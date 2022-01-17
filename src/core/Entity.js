@@ -97,6 +97,12 @@ class Entity {
 		return this.#scene;
 	}
 
+	hasComponent(...componentIds) {
+		return componentIds
+			.map((id) => Object.prototype.hasOwnProperty.call(this.#componentIndexes, id))
+			.every((elem) => elem === true);
+	}
+
 	/* ================================ SETTERS ================================ */
 
 	addComponent(...components) {
@@ -115,6 +121,11 @@ class Entity {
 	}
 
 	removeComponent(...componentIds) {
+		if (process.env.NODE_ENV !== 'production') {
+			if (this.#scene === undefined) {
+				throw new IntegrationError('Cannot remove components, entity is not associated with a scene');
+			}
+		}
 		this.scene.removeComponent(componentIds.map((id) => this.#componentIndexes[id]));
 	}
 
