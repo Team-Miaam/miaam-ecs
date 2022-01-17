@@ -3,9 +3,7 @@ import InterfaceError from '../error/Interface.error.js';
 class Scene {
 	#entities;
 
-	#components = {
-		'Position': [postion1, ....]
-	};
+	#components;
 
 	#systems;
 
@@ -24,8 +22,10 @@ class Scene {
 
 	/* ================================ LIFECYCLE METHODS ================================ */
 
+	// eslint-disable-next-line class-methods-use-this
 	preInit() {}
 
+	// eslint-disable-next-line class-methods-use-this
 	init() {}
 
 	update() {
@@ -34,10 +34,13 @@ class Scene {
 		});
 	}
 
+	// eslint-disable-next-line class-methods-use-this
 	preDestroy() {}
 
+	// eslint-disable-next-line class-methods-use-this
 	postDestroy() {}
 
+	// eslint-disable-next-line class-methods-use-this
 	destroy() {}
 
 	/* ================================ GETTERS ================================ */
@@ -107,8 +110,10 @@ class Scene {
 
 	/* ================================ UTILITY ================================ */
 
+	// eslint-disable-next-line class-methods-use-this
 	clone() {}
 
+	// eslint-disable-next-line class-methods-use-this
 	serialize() {}
 
 	static deserialize() {}
