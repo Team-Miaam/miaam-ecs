@@ -36,34 +36,13 @@ class Entity {
 	/* ================================ LIFECYCLE METHODS ================================ */
 
 	/**
-	 * Pre-init method gets executed just before a entity is initialized.
-	 * <br>
-	 * This function runs before any of the properties of the entity is initialized
-	 * when the entity is instantiated or reset.
-	 *
-	 * @since 0.0.1
-	 * @public
-	 */
-	preInit() {}
-
-	/**
 	 * Init method gets executed after the entity is initialized and associated to a scene.
 	 * So primarily all of the component associated works should be processed after/when the init function is called.
 	 */
 	init() {}
 
 	/**
-	 * Pre-destroy method gets executed just before a entity gets destroyed
-	 */
-	preDestroy() {}
-
-	/**
-	 * Post-destroy method gets executed after a entity is destroyed
-	 */
-	postDestroy() {}
-
-	/**
-	 * Destroys the entity
+	 * destroy method gets executed just before a entity gets destroyed
 	 */
 	destroy() {}
 

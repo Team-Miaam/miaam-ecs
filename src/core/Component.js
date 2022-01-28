@@ -77,18 +77,6 @@ class Component {
 	/* ================================ LIFECYCLE METHODS ================================ */
 
 	/**
-	 * Pre-init method gets executed just before a component is initialized.
-	 * <br>
-	 * This function runs before any of the properties of the component is initialized
-	 * when the component is instantiated or reset.
-	 *
-	 * @since 0.0.1
-	 * @public
-	 */
-	// eslint-disable-next-line class-methods-use-this
-	preInit() {}
-
-	/**
 	 * Init method gets executed after the component is initialized
 	 */
 	// eslint-disable-next-line class-methods-use-this
@@ -109,19 +97,7 @@ class Component {
 	}
 
 	/**
-	 * TODO Pre-destroy method gets executed just before a component gets destroyed
-	 */
-	// eslint-disable-next-line class-methods-use-this
-	preDestroy() {}
-
-	/**
-	 * TODO Post-destroy method gets executed after the component is destroyed
-	 */
-	// eslint-disable-next-line class-methods-use-this
-	postDestroy() {}
-
-	/**
-	 * TODO Destroys the component
+	 * TODO destroy method gets executed just before a component gets destroyed
 	 */
 	// eslint-disable-next-line class-methods-use-this
 	destroy() {}
