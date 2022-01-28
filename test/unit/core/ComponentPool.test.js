@@ -1,8 +1,9 @@
 import { expect } from 'chai';
 import { describe, test } from 'mocha';
-import Position from '../../../src/component/Position.component.js';
+
 import ComponentPool from '../../../src/core/ComponentPool.js';
 import InterfaceError from '../../../src/error/Interface.error.js';
+import Position from '../../mock/component/Position.component.js';
 
 describe('Component Pool', () => {
 	const position = new Position();

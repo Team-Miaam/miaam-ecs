@@ -13,8 +13,13 @@ module.exports = {
 	plugins: ['@babel', 'import', 'prettier'],
 	rules: {
 		'prettier/prettier': 'error',
-		// printWidth rule in prettier is not working
 		'max-len': ['error', { code: 120, tabWidth: 2 }],
 		'import/extensions': ['error', 'always'],
+		'no-underscore-dangle': [
+			'error',
+			{
+				allow: ['__ticker__'],
+			},
+		],
 	},
 };

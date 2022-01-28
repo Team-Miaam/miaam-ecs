@@ -3,11 +3,12 @@
 /* eslint-disable no-new */
 import { expect } from 'chai';
 import { describe, test } from 'mocha';
+
 import Component from '../../../src/core/Component.js';
-import InterfaceError from '../../../src/error/Interface.error.js';
+import Type from '../../../src/core/Type.js';
 import * as PrimitiveTypes from '../../../src/type/PrimitiveTypes.js';
 import IllegalArgumentError from '../../../src/error/IllegalArgument.error.js';
-import Type from '../../../src/core/Type.js';
+import InterfaceError from '../../../src/error/Interface.error.js';
 
 describe('Component', () => {
 	const positionSchema = {
