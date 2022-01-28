@@ -109,19 +109,19 @@ class Component {
 	}
 
 	/**
-	 * Pre-destroy method gets executed just before a component gets destroyed
+	 * TODO Pre-destroy method gets executed just before a component gets destroyed
 	 */
 	// eslint-disable-next-line class-methods-use-this
 	preDestroy() {}
 
 	/**
-	 * Post-destroy method gets executed after the component is destroyed
+	 * TODO Post-destroy method gets executed after the component is destroyed
 	 */
 	// eslint-disable-next-line class-methods-use-this
 	postDestroy() {}
 
 	/**
-	 * Destroys the component
+	 * TODO Destroys the component
 	 */
 	// eslint-disable-next-line class-methods-use-this
 	destroy() {}
@@ -147,9 +147,6 @@ class Component {
 			checkSchemaProps(schema, props);
 		}
 
-		// executing pre instantiation operations
-		this.preInit();
-
 		// getting defaults from pre-defined schema
 		this.#props = Object.fromEntries(
 			Object.entries(schema).map(([key]) => {
@@ -164,9 +161,6 @@ class Component {
 				return [key, schema[key].type.defaultValue];
 			})
 		);
-
-		// executing post instantiation operations
-		this.init();
 	}
 
 	/* ================================ GETTERS ================================ */

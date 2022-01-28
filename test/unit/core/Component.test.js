@@ -149,17 +149,12 @@ describe('Component', () => {
 		});
 
 		test('reset', () => {
-			class Position extends Component {
-				init() {
-					this.update({ x: this.props.x + 2, y: this.props.y + 2 });
-				}
-			}
+			class Position extends Component {}
 			Position.setSchema(positionSchema);
 			const playerPosition = new Position({ x: 2, y: 2 });
 
-			expect(playerPosition.props).to.deep.equals({ x: 4, y: 4 });
 			playerPosition.reset({ x: 0, y: 0 });
-			expect(playerPosition.props).to.deep.equals({ x: 2, y: 2 });
+			expect(playerPosition.props).to.deep.equals({ x: 0, y: 0 });
 		});
 
 		test('clone', () => {
