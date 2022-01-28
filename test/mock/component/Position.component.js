@@ -1,5 +1,5 @@
-import Component from '../core/Component.js';
-import { Number } from '../type/PrimitiveTypes.js';
+import Component from '../../../src/core/Component.js';
+import { Number } from '../../../src/type/PrimitiveTypes.js';
 
 const positionSchema = {
 	x: { type: Number },

@@ -1,11 +1,13 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable no-new */
 // eslint-disable-next-line max-classes-per-file
 import { expect } from 'chai';
 import { describe, test } from 'mocha';
-import Position from '../../../src/component/Position.component.js';
-import Entity from '../../../src/core/Entity.js';
+
 import InterfaceError from '../../../src/error/Interface.error.js';
 import IntegrationError from '../../../src/error/Integration.error.js';
+import Entity from '../../../src/core/Entity.js';
+import Position from '../../mock/component/Position.component.js';
 
 describe('Entity', () => {
 	class Player extends Entity {}
@@ -35,6 +37,8 @@ describe('Entity', () => {
 				}).to.throw(IntegrationError, 'entity is not associated with a scene');
 			});
 		});
+
+		describe('hasComponent', () => {});
 	});
 
 	describe('Reliability', () => {});
