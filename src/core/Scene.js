@@ -23,22 +23,15 @@ class Scene {
 	/* ================================ LIFECYCLE METHODS ================================ */
 
 	// eslint-disable-next-line class-methods-use-this
-	preInit() {}
-
-	// eslint-disable-next-line class-methods-use-this
 	init() {}
 
 	update() {
 		Object.values(this.#systems).forEach((system) => {
+			system.beforeUpdate();
 			system.update();
+			system.afterUpdate();
 		});
 	}
-
-	// eslint-disable-next-line class-methods-use-this
-	preDestroy() {}
-
-	// eslint-disable-next-line class-methods-use-this
-	postDestroy() {}
 
 	// eslint-disable-next-line class-methods-use-this
 	destroy() {}
@@ -63,6 +56,7 @@ class Scene {
 		const indexes = components.map((component) => {
 			const componentPool = this.#components[component.constructor.name];
 			const index = componentPool.malloc(component);
+			component.init();
 			return index;
 		});
 
@@ -72,6 +66,7 @@ class Scene {
 	removeComponent(...componentIndexes) {
 		componentIndexes.forEach(({ type, index }) => {
 			const componentPool = this.#components[type];
+			componentPool[index].destroy();
 			componentPool.free(index);
 		});
 	}
@@ -86,7 +81,6 @@ class Scene {
 		ids.forEach((id) => {
 			const entity = this.#entities[id];
 			entity.preDestroy();
-			entity.destroy();
 			delete this.#entities[id];
 			entity.postDestroy();
 		});
@@ -95,16 +89,15 @@ class Scene {
 	addSystem(...systems) {
 		systems.forEach(({ id, system }) => {
 			this.#systems[id] = system;
+			system.init();
 		});
 	}
 
 	removeSystem(...systemIds) {
 		systemIds.forEach((id) => {
 			const system = this.#systems[id];
-			system.preDestroy();
 			system.destroy();
 			delete this.#systems[id];
-			system.postDestroy();
 		});
 	}
 
