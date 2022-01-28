@@ -4,6 +4,7 @@
 	"description": "Miaam Template Generator",
 	"main": "./src/index.js",
 	"scripts": {
+		"prepare": "husky install",
 		"format": "prettier --write .",
 		"lint": "eslint .",
 		"lint:staged": "lint-staged --config .lintstagedrc.json",
