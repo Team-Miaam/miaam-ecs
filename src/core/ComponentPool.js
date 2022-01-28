@@ -3,58 +3,31 @@ import InterfaceError from '../error/Interface.error.js';
 class ComponentPool {
 	#pool;
 
-	#pooltracker;
+	#size;
 
-	#cursor;
+	#index;
 
-	#poolSize;
+	#indexTracker;
+
+	#type;
 
 	#totalUsed;
 
-	constructor(ComponentClass, size) {
-		this.#totalUsed = 0;
-		this.#cursor = 0;
-		this.#poolSize = size;
+	/* ================================ CONSTRUCTORS ================================ */
+
+	constructor({ type, size = 1000 }) {
 		this.#pool = new Array(size);
-		this.#pooltracker = new Array(size);
-
-		for (let index = 0; index < this.#pool.length; index += 1) {
-			const component = new ComponentClass();
-			this.#pool[index] = component;
-			this.#pooltracker[index] = false;
-		}
+		this.#size = size;
+		this.#index = [...Array(100).keys()];
+		this.#indexTracker = [...Array(100).keys()];
+		this.#type = type;
+		this.#totalUsed = 0;
 	}
 
-	malloc(component) {
-		if (this.#poolSize > this.#cursor) {
-			if (this.#pooltracker[this.#cursor] === false) {
-				this.#pool[this.#cursor].reset(component.props);
-				this.#pooltracker[this.#cursor] = true;
-				this.#cursor += 1;
-			}
-			this.#totalUsed += 1;
-			return this.#cursor - 1;
-		}
-		for (let index = 0; index < this.#poolSize; index += 1) {
-			if (this.#pooltracker[index] === false) {
-				this.#cursor = index;
-				this.#pool[this.#cursor].reset(component.props);
-				this.#pooltracker[this.#cursor] = true;
-				this.#cursor += 1;
+	/* ================================ GETTERS ================================ */
 
-				this.#totalUsed += 1;
-				return this.#cursor - 1;
-			}
-		}
-
-		throw new InterfaceError('cannot add more components to the pool. Poolsize reached limits');
-	}
-
-	free(index) {
-		if (this.#pooltracker[index] === true) {
-			this.#pooltracker[index] = false;
-			this.#totalUsed -= 1;
-		}
+	get size() {
+		return this.#size;
 	}
 
 	get totalUsed() {
@@ -62,7 +35,54 @@ class ComponentPool {
 	}
 
 	get totalFree() {
-		return this.#poolSize - this.#totalUsed;
+		return this.size - this.#totalUsed;
+	}
+
+	componentAt(index) {
+		if (this.isFree(index)) {
+			throw new InterfaceError(`Cannot get the component at ${index}, memory at asked index is marked as free.`);
+		}
+		return this.#pool[index];
+	}
+
+	/* ================================ SETTERS ================================ */
+
+	malloc(component) {
+		if (process.env.NODE_ENV !== 'production') {
+			if (!(component instanceof this.#type)) {
+				throw new InterfaceError(
+					`Cannot allocate memory for component, component is not an instance of provisioned class ${this.#type.name}.`
+				);
+			}
+		}
+		if (this.totalFree === 0) {
+			throw new InterfaceError(
+				`Cannot allocate memory for component, pool size limit reached, max size is ${this.size}`
+			);
+		}
+
+		const index = this.#index[this.#totalUsed];
+		this.#pool[index] = component;
+		this.#totalUsed += 1;
+		return index;
+	}
+
+	free(index) {
+		this.#totalUsed -= 1;
+		const lastIndex = this.#index[this.#totalUsed];
+		const positionOfIndex = this.#indexTracker[index];
+
+		this.#index[this.#totalUsed] = index;
+		this.#indexTracker[index] = this.#totalUsed;
+
+		this.#index[positionOfIndex] = lastIndex;
+		this.#indexTracker[lastIndex] = positionOfIndex;
+	}
+
+	/* ================================ UTILITY ================================ */
+
+	isFree(index) {
+		return this.#indexTracker[index] >= this.#totalUsed;
 	}
 }
 
