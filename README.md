@@ -1,3 +1,3 @@
-# js-base-starter
+# miaam-ecs 
 
-Starter for JS Projects using webpack, eslint, babel
+ECS backend for miaam
