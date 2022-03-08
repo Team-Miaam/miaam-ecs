@@ -1,7 +1,8 @@
+import Type from './src/core/Type.js';
+import * as PrimitiveTypes from './src/type/PrimitiveTypes.js';
 import Component from './src/core/Component.js';
 import Entity from './src/core/Entity.js';
 import System from './src/core/System.js';
-import Type from './src/core/Type.js';
-import * as PrimitiveTypes from './src/type/PrimitiveTypes.js';
+import Scene from './src/core/Scene.js';
 
-export { Component, Entity, System, Type, PrimitiveTypes };
+export { Type, PrimitiveTypes, Component, Entity, System, Scene };
