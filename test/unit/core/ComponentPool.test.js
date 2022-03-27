@@ -5,7 +5,7 @@ import ComponentPool from '../../../src/core/ComponentPool.js';
 import InterfaceError from '../../../src/error/Interface.error.js';
 import Position from '../../mock/component/Position.component.js';
 
-describe('Component Pool', () => {
+describe.skip('Component Pool', () => {
 	const position = new Position();
 
 	describe('Instantiation', () => {});

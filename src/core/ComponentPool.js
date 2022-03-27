@@ -1,13 +1,14 @@
 import InterfaceError from '../error/Interface.error.js';
 
+const FREE = -1;
 class ComponentPool {
 	#pool;
 
+	#componentIndexes;
+
+	#entities;
+
 	#size;
-
-	#index;
-
-	#indexTracker;
 
 	#type;
 
@@ -15,11 +16,11 @@ class ComponentPool {
 
 	/* ================================ CONSTRUCTORS ================================ */
 
-	constructor({ type, size = 1000 }) {
-		this.#pool = new Array(size);
-		this.#size = size;
-		this.#index = [...Array(100).keys()];
-		this.#indexTracker = [...Array(100).keys()];
+	constructor({ type, maxComponents = 1000, maxEntities = 64 }) {
+		this.#pool = new Array(maxComponents);
+		this.#componentIndexes = new Array(maxEntities).fill(FREE);
+		this.#entities = new Array(maxComponents);
+		this.#size = maxComponents;
 		this.#type = type;
 		this.#totalUsed = 0;
 	}
@@ -38,16 +39,14 @@ class ComponentPool {
 		return this.size - this.#totalUsed;
 	}
 
-	componentAt(index) {
-		if (this.isFree(index)) {
-			throw new InterfaceError(`Cannot get the component at ${index}, memory at asked index is marked as free.`);
-		}
-		return this.#pool[index];
+	getComponent(entity) {
+		const componentIndex = this.#componentIndexes[entity];
+		return this.#pool[componentIndex];
 	}
 
 	/* ================================ SETTERS ================================ */
 
-	malloc(component) {
+	malloc(entity, component) {
 		if (process.env.NODE_ENV !== 'production') {
 			if (!(component instanceof this.#type)) {
 				throw new InterfaceError(
@@ -61,28 +60,31 @@ class ComponentPool {
 			);
 		}
 
-		const index = this.#index[this.#totalUsed];
-		this.#pool[index] = component;
+		this.#pool[this.#totalUsed] = component;
+		this.#componentIndexes[entity] = this.#totalUsed;
+		this.#entities[this.#totalUsed] = entity;
+
 		this.#totalUsed += 1;
-		return index;
+		return this.#totalUsed - 1;
 	}
 
-	free(index) {
+	free(entity) {
 		this.#totalUsed -= 1;
-		const lastIndex = this.#index[this.#totalUsed];
-		const positionOfIndex = this.#indexTracker[index];
 
-		this.#index[this.#totalUsed] = index;
-		this.#indexTracker[index] = this.#totalUsed;
+		const componentIndex = this.#componentIndexes[entity];
+		const entityToBeSwapped = this.#entities[this.#totalUsed];
 
-		this.#index[positionOfIndex] = lastIndex;
-		this.#indexTracker[lastIndex] = positionOfIndex;
+		this.#entities[componentIndex] = entityToBeSwapped;
+		this.#componentIndexes[entityToBeSwapped] = componentIndex;
+		this.#componentIndexes[componentIndex] = FREE;
+		this.#pool[componentIndex] = this.#pool[this.#totalUsed];
 	}
 
 	/* ================================ UTILITY ================================ */
 
-	isFree(index) {
-		return this.#indexTracker[index] >= this.#totalUsed;
+	hasComponent(entity) {
+		const componentIndex = this.#componentIndexes[entity];
+		return componentIndex !== FREE;
 	}
 }
 
