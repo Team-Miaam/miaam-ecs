@@ -4,7 +4,7 @@ import { describe, test } from 'mocha';
 import Scene from '../../../src/core/Scene.js';
 import InterfaceError from '../../../src/error/Interface.error.js';
 
-describe('Scene', () => {
+describe.skip('Scene', () => {
 	describe('Abstraction', () => {
 		test('Scene class is abstract', () => {
 			expect(() => {

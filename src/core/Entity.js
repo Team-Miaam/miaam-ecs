@@ -17,7 +17,7 @@ import IllegalArgumentError from '../error/IllegalArgument.error.js';
  * @class
  */
 class Entity {
-	#componentIndexes;
+	#id;
 
 	/**
 	 * @type {Scene}
@@ -61,52 +61,55 @@ class Entity {
 
 	/* ================================ GETTERS ================================ */
 
+	get id() {
+		return this.#id;
+	}
+
 	/**
 	 * Returns an array of {componentId: [component, index]} when one or more components are provided in the arguments
 	 * otherwise returns all the components i.e. when the argument array is empty.
 	 *
-	 * @param {Array} componentIds
+	 * @param {Array} componentTypes
 	 */
-	getComponent(...componentIds) {
-		const componentsIndexes = componentIds.map((id) => this.#componentIndexes[id]);
-		this.scene.getComponent(componentsIndexes);
+	getComponent(...componentTypes) {
+		return this.scene.getComponent(this.#id, componentTypes);
+	}
+
+	getAllComponents() {
+		return this.scene.getAllComponents(this.#id);
 	}
 
 	get scene() {
 		return this.#scene;
 	}
 
-	hasComponent(...componentIds) {
-		return componentIds
-			.map((id) => Object.prototype.hasOwnProperty.call(this.#componentIndexes, id))
-			.every((elem) => elem === true);
-	}
-
 	/* ================================ SETTERS ================================ */
+
+	set id(id) {
+		this.#id = id;
+	}
 
 	addComponent(...components) {
 		if (process.env.NODE_ENV !== 'production') {
 			if (this.#scene === undefined) {
 				throw new IntegrationError('Cannot add components, entity is not associated with a scene');
 			}
+			components.map();
 		}
 
-		const componentsOnly = components.map(({ component }) => component);
-		const indexes = this.scene.addComponent(componentsOnly);
-		const idsOnly = components.map(({ id }) => id);
-		idsOnly.forEach((id, index) => {
-			this.#componentIndexes[id] = { type: componentsOnly[index], index: indexes[index] };
-		});
+		this.#scene.addComponent(this.#id, components);
 	}
 
-	removeComponent(...componentIds) {
+	removeComponent(...componentTypes) {
 		if (process.env.NODE_ENV !== 'production') {
 			if (this.#scene === undefined) {
 				throw new IntegrationError('Cannot remove components, entity is not associated with a scene');
 			}
 		}
-		this.scene.removeComponent(componentIds.map((id) => this.#componentIndexes[id]));
+		this.scene.removeComponent(this.#id, componentTypes);
 	}
+
+	removeAllComponents() {}
 
 	set scene(scene) {
 		if (process.env.NODE_ENV !== 'production') {

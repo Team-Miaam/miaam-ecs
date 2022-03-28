@@ -1,4 +1,5 @@
 import InterfaceError from '../error/Interface.error.js';
+import ComponentPool from './ComponentPool.js';
 
 class Scene {
 	#entities;
@@ -7,17 +8,21 @@ class Scene {
 
 	#systems;
 
+	#maxEntities;
+
 	/* ================================ CONSTRUCTORS ================================ */
-	constructor() {
+	constructor({ maxEntities = 64 }) {
 		if (process.env.NODE_ENV !== 'production') {
 			if (this.constructor === Scene) {
 				throw new InterfaceError('Cannot instantiate Scene class. Scene class is abstract.');
 			}
 		}
 
-		this.#entities = {};
+		this.#entities = new Array(maxEntities);
 		this.#components = {};
 		this.#systems = {};
+
+		this.#maxEntities = maxEntities;
 	}
 
 	/* ================================ LIFECYCLE METHODS ================================ */
@@ -38,12 +43,16 @@ class Scene {
 
 	/* ================================ GETTERS ================================ */
 
-	getComponent(...componentIndexes) {
-		return componentIndexes.map(({ type, index }) => this.#components[type][index]);
+	getComponent(entityId, ...componentTypes) {
+		return componentTypes.map((type) => this.#components[type].getComponent(entityId));
 	}
 
-	getEntity(...entityIds) {
-		return entityIds.map((id) => this.#entities[id]);
+	getAllComponents(entityId) {
+		return Object.fromEntries(
+			Object.entries(this.#components)
+				.filter(([, componentPool]) => componentPool.hasComponent(entityId))
+				.map(([type, componentPool]) => [type, componentPool.getComponent(entityId)])
+		);
 	}
 
 	getSystem(...systemIds) {
@@ -52,37 +61,44 @@ class Scene {
 
 	/* ================================ SETTERS ================================ */
 
-	addComponent(...components) {
-		const indexes = components.map((component) => {
-			const componentPool = this.#components[component.constructor.name];
-			const index = componentPool.malloc(component);
-			component.init();
-			return index;
-		});
-
-		return indexes;
-	}
-
-	removeComponent(...componentIndexes) {
-		componentIndexes.forEach(({ type, index }) => {
+	addComponent(entityId, ...components) {
+		components.forEach((component) => {
+			const type = component.constructor.name;
+			if (!this.#components[type]) {
+				this.#components[type] = new ComponentPool({});
+			}
 			const componentPool = this.#components[type];
-			componentPool[index].destroy();
-			componentPool.free(index);
+			componentPool.malloc(entityId, component);
+			component.init();
 		});
 	}
+
+	removeComponent(entityId, ...componentTypes) {
+		componentTypes.forEach((type) => {
+			// FIXME: add error control for non existent component types
+			const componentPool = this.#components[type];
+			const component = componentPool.getComponent(entityId);
+			component.destroy();
+			componentPool.free(entityId);
+		});
+	}
+
+	removeAllComponents(entityId) {}
 
 	addEntity(...entities) {
-		entities.forEach(({ id, entity }) => {
-			this.#entities[id] = entity;
+		entities.forEach((entity) => {
+			this.#entities[entity.id] = true;
+			entity.setId();
+			entity.setScene(this);
+			entity.init();
 		});
 	}
 
-	removeEntity(...ids) {
-		ids.forEach((id) => {
-			const entity = this.#entities[id];
-			entity.preDestroy();
-			delete this.#entities[id];
-			entity.postDestroy();
+	removeEntity(...entities) {
+		entities.forEach((entity) => {
+			const entityId = entity.id;
+			entity.destroy();
+			this.#entities[entityId] = false;
 		});
 	}
 
