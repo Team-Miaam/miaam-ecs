@@ -72,10 +72,22 @@ class Entity {
 	 * @param {Array} componentTypes
 	 */
 	getComponent(...componentTypes) {
+		if (process.env.NODE_ENV !== 'production') {
+			if (this.#scene === undefined) {
+				throw new IntegrationError('Cannot get components, entity is not associated with a scene');
+			}
+		}
+
 		return this.scene.getComponent(this.#id, componentTypes);
 	}
 
 	getAllComponents() {
+		if (process.env.NODE_ENV !== 'production') {
+			if (this.#scene === undefined) {
+				throw new IntegrationError('Cannot get components, entity is not associated with a scene');
+			}
+		}
+
 		return this.scene.getAllComponents(this.#id);
 	}
 
@@ -94,7 +106,6 @@ class Entity {
 			if (this.#scene === undefined) {
 				throw new IntegrationError('Cannot add components, entity is not associated with a scene');
 			}
-			components.map();
 		}
 
 		this.#scene.addComponent(this.#id, components);
@@ -106,10 +117,19 @@ class Entity {
 				throw new IntegrationError('Cannot remove components, entity is not associated with a scene');
 			}
 		}
+
 		this.scene.removeComponent(this.#id, componentTypes);
 	}
 
-	removeAllComponents() {}
+	removeAllComponents() {
+		if (process.env.NODE_ENV !== 'production') {
+			if (this.#scene === undefined) {
+				throw new IntegrationError('Cannot remove components, entity is not associated with a scene');
+			}
+		}
+
+		this.scene.removeAllComponents(this.#id);
+	}
 
 	set scene(scene) {
 		if (process.env.NODE_ENV !== 'production') {

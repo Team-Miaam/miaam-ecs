@@ -1,14 +1,13 @@
 import InterfaceError from '../error/Interface.error.js';
+import IndexGenerator from '../utility/IndexGenerator.js';
 import ComponentPool from './ComponentPool.js';
 
 class Scene {
-	#entities;
-
 	#components;
 
 	#systems;
 
-	#maxEntities;
+	#entityIdGenerator;
 
 	/* ================================ CONSTRUCTORS ================================ */
 	constructor({ maxEntities = 64 }) {
@@ -18,11 +17,10 @@ class Scene {
 			}
 		}
 
-		this.#entities = new Array(maxEntities);
 		this.#components = {};
 		this.#systems = {};
 
-		this.#maxEntities = maxEntities;
+		this.#entityIdGenerator = new IndexGenerator({ size: maxEntities });
 	}
 
 	/* ================================ LIFECYCLE METHODS ================================ */
@@ -83,12 +81,16 @@ class Scene {
 		});
 	}
 
-	removeAllComponents(entityId) {}
+	removeAllComponents(entityId) {
+		this.removeComponent(
+			entityId,
+			Object.keys(this.#components).filter((type) => this.#components[type].hasComponent(entityId))
+		);
+	}
 
 	addEntity(...entities) {
 		entities.forEach((entity) => {
-			this.#entities[entity.id] = true;
-			entity.setId();
+			entity.setId(this.#entityIdGenerator.nextFreeIndex);
 			entity.setScene(this);
 			entity.init();
 		});
@@ -97,8 +99,9 @@ class Scene {
 	removeEntity(...entities) {
 		entities.forEach((entity) => {
 			const entityId = entity.id;
+			this.removeAllComponents(entityId);
 			entity.destroy();
-			this.#entities[entityId] = false;
+			this.#entityIdGenerator.free(entityId);
 		});
 	}
 

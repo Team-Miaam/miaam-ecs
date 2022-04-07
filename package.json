@@ -28,6 +28,7 @@
 		"@babel/core": "^7.16.0",
 		"@babel/eslint-parser": "^7.16.3",
 		"@babel/eslint-plugin": "^7.13.16",
+		"@babel/polyfill": "^7.12.1",
 		"@babel/preset-env": "^7.16.4",
 		"@babel/register": "^7.16.0",
 		"@pixi/jsdoc-template": "^2.6.0",

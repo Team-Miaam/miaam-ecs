@@ -7,7 +7,7 @@
 module.exports = {
 	package: './package.json',
 	ignore: ['./node_modules/'],
-	require: ['@babel/register'],
+	require: ['@babel/register', '@babel/polyfill'],
 	recursive: true,
 
 	// 'allow-uncaught': false,
