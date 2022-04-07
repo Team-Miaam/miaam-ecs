@@ -1,23 +1,26 @@
 import InterfaceError from '../error/Interface.error.js';
+import IndexGenerator from '../utility/IndexGenerator.js';
+import ComponentPool from './ComponentPool.js';
 
 class Scene {
-	#entities;
-
 	#components;
 
 	#systems;
 
+	#entityIdGenerator;
+
 	/* ================================ CONSTRUCTORS ================================ */
-	constructor() {
+	constructor({ maxEntities = 64 }) {
 		if (process.env.NODE_ENV !== 'production') {
 			if (this.constructor === Scene) {
 				throw new InterfaceError('Cannot instantiate Scene class. Scene class is abstract.');
 			}
 		}
 
-		this.#entities = {};
 		this.#components = {};
 		this.#systems = {};
+
+		this.#entityIdGenerator = new IndexGenerator({ size: maxEntities });
 	}
 
 	/* ================================ LIFECYCLE METHODS ================================ */
@@ -38,12 +41,16 @@ class Scene {
 
 	/* ================================ GETTERS ================================ */
 
-	getComponent(...componentIndexes) {
-		return componentIndexes.map(({ type, index }) => this.#components[type][index]);
+	getComponent(entityId, ...componentTypes) {
+		return componentTypes.map((type) => this.#components[type].getComponent(entityId));
 	}
 
-	getEntity(...entityIds) {
-		return entityIds.map((id) => this.#entities[id]);
+	getAllComponents(entityId) {
+		return Object.fromEntries(
+			Object.entries(this.#components)
+				.filter(([, componentPool]) => componentPool.hasComponent(entityId))
+				.map(([type, componentPool]) => [type, componentPool.getComponent(entityId)])
+		);
 	}
 
 	getSystem(...systemIds) {
@@ -52,37 +59,49 @@ class Scene {
 
 	/* ================================ SETTERS ================================ */
 
-	addComponent(...components) {
-		const indexes = components.map((component) => {
-			const componentPool = this.#components[component.constructor.name];
-			const index = componentPool.malloc(component);
+	addComponent(entityId, ...components) {
+		components.forEach((component) => {
+			const type = component.constructor.name;
+			if (!this.#components[type]) {
+				this.#components[type] = new ComponentPool({});
+			}
+			const componentPool = this.#components[type];
+			componentPool.malloc(entityId, component);
 			component.init();
-			return index;
 		});
-
-		return indexes;
 	}
 
-	removeComponent(...componentIndexes) {
-		componentIndexes.forEach(({ type, index }) => {
+	removeComponent(entityId, ...componentTypes) {
+		componentTypes.forEach((type) => {
+			// FIXME: add error control for non existent component types
 			const componentPool = this.#components[type];
-			componentPool[index].destroy();
-			componentPool.free(index);
+			const component = componentPool.getComponent(entityId);
+			component.destroy();
+			componentPool.free(entityId);
 		});
+	}
+
+	removeAllComponents(entityId) {
+		this.removeComponent(
+			entityId,
+			Object.keys(this.#components).filter((type) => this.#components[type].hasComponent(entityId))
+		);
 	}
 
 	addEntity(...entities) {
-		entities.forEach(({ id, entity }) => {
-			this.#entities[id] = entity;
+		entities.forEach((entity) => {
+			entity.setId(this.#entityIdGenerator.nextFreeIndex);
+			entity.setScene(this);
+			entity.init();
 		});
 	}
 
-	removeEntity(...ids) {
-		ids.forEach((id) => {
-			const entity = this.#entities[id];
-			entity.preDestroy();
-			delete this.#entities[id];
-			entity.postDestroy();
+	removeEntity(...entities) {
+		entities.forEach((entity) => {
+			const entityId = entity.id;
+			this.removeAllComponents(entityId);
+			entity.destroy();
+			this.#entityIdGenerator.free(entityId);
 		});
 	}
 
