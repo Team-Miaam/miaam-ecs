@@ -26,7 +26,11 @@ class Scene {
 	/* ================================ LIFECYCLE METHODS ================================ */
 
 	// eslint-disable-next-line class-methods-use-this
-	init() {}
+	init() {
+		Object.values(this.#systems).forEach((system) => {
+			system.init({ components: this.#components, entities: this.#entityIdGenerator.indexes });
+		});
+	}
 
 	update(delta) {
 		Object.values(this.#systems).forEach((system) => {
@@ -110,7 +114,6 @@ class Scene {
 	addSystem(...systems) {
 		systems.forEach(({ id, system }) => {
 			this.#systems[id] = system;
-			system.init();
 		});
 	}
 
