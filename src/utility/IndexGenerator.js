@@ -11,8 +11,8 @@ class IndexGenerator {
 
 	constructor({ size = 64 }) {
 		this.#size = size;
-		this.#index = [...Array(size).keys];
-		this.#indexTracker = [...Array(size).keys];
+		this.#index = [...Array(size).keys()];
+		this.#indexTracker = [...Array(size).keys()];
 		this.#totalUsed = 0;
 	}
 

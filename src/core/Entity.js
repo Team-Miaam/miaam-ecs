@@ -108,7 +108,7 @@ class Entity {
 			}
 		}
 
-		this.#scene.addComponent(this.#id, components);
+		this.#scene.addComponent(this.#id, ...components);
 	}
 
 	removeComponent(...componentTypes) {
@@ -139,6 +139,8 @@ class Entity {
 				throw new IllegalArgumentError(`Cannot set scene, provided scene is not an instance of scene class`);
 			}
 		}
+
+		this.#scene = scene;
 	}
 
 	/* ================================ UTILITY ================================ */

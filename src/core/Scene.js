@@ -10,7 +10,7 @@ class Scene {
 	#entityIdGenerator;
 
 	/* ================================ CONSTRUCTORS ================================ */
-	constructor({ maxEntities = 64 }) {
+	constructor({ maxEntities = 64 } = {}) {
 		if (process.env.NODE_ENV !== 'production') {
 			if (this.constructor === Scene) {
 				throw new InterfaceError('Cannot instantiate Scene class. Scene class is abstract.');
@@ -28,10 +28,10 @@ class Scene {
 	// eslint-disable-next-line class-methods-use-this
 	init() {}
 
-	update() {
+	update(delta) {
 		Object.values(this.#systems).forEach((system) => {
 			system.beforeUpdate();
-			system.update({ components: this.#components, entities: this.#entityIdGenerator.indexes });
+			system.update({ delta, components: this.#components, entities: this.#entityIdGenerator.indexes });
 			system.afterUpdate();
 		});
 	}
@@ -90,8 +90,10 @@ class Scene {
 
 	addEntity(...entities) {
 		entities.forEach((entity) => {
-			entity.setId(this.#entityIdGenerator.nextFreeIndex);
-			entity.setScene(this);
+			// eslint-disable-next-line no-param-reassign
+			entity.id = this.#entityIdGenerator.nextFreeIndex;
+			// eslint-disable-next-line no-param-reassign
+			entity.scene = this;
 			entity.init();
 		});
 	}
