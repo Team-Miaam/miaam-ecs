@@ -51,7 +51,7 @@ class IndexGenerator {
 	}
 
 	get indexes() {
-		return this.#index.slice(this.#totalUsed);
+		return this.#index.slice(0, this.#totalUsed);
 	}
 }
 

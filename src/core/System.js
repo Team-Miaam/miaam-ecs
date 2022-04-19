@@ -1,11 +1,10 @@
 /* eslint-disable no-empty-function */
 /* eslint-disable class-methods-use-this */
 class System {
-	#query;
+	queries;
 
-	// eslint-disable-next-line no-useless-constructor
-	constructor({ query }) {
-		this.#query = query;
+	constructor() {
+		this.queries = {};
 	}
 
 	init() {}
@@ -17,10 +16,6 @@ class System {
 	afterUpdate() {}
 
 	destroy() {}
-
-	get query() {
-		return this.#query;
-	}
 }
 
 export default System;
