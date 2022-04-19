@@ -50,10 +50,8 @@ class IndexGenerator {
 		this.#indexTracker[lastIndex] = positionOfIndex;
 	}
 
-	*indexes() {
-		for (let i = 0; i < this.#totalUsed; i += 1) {
-			yield this.#index[i];
-		}
+	get indexes() {
+		return this.#index.slice(this.#totalUsed);
 	}
 }
 

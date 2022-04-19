@@ -31,7 +31,7 @@ class Scene {
 	update() {
 		Object.values(this.#systems).forEach((system) => {
 			system.beforeUpdate();
-			system.update();
+			system.update({ components: this.#components, entities: this.#entityIdGenerator.indexes });
 			system.afterUpdate();
 		});
 	}
